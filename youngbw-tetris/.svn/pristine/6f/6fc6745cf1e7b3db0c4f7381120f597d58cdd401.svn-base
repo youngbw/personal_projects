@@ -1,0 +1,146 @@
+/*
+ * 
+ */
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import model.Board;
+
+/**
+ * This class represents a menu bar containing a file, help, and
+ * checkbox option menu.
+ * @author BrentYoung
+ * @version 1.0
+ */
+@SuppressWarnings("serial")
+public class MyMenuBar extends JMenuBar {    
+
+    /**
+     * Constructor for this menu bar, initializes and adds all components
+     * to the menu bar.
+     * @param theFrame reference to the main frame
+     * @param theBoardPanel reference to the panel containing the board
+     * @param theSidePanel reference to the side panel for stats
+     */
+    public MyMenuBar(final JFrame theFrame, final JPanel theBoardPanel,
+                     final JPanel theSidePanel) {
+        final JMenu fileMenu = setupFileMenu(theFrame, (MyBoardPanel) theBoardPanel);
+        final JCheckBoxMenuItem viewOption = setupViewOption(theFrame, theSidePanel);
+        viewOption.doClick();
+        add(fileMenu);
+        add(setupHelpMenu());
+        add(viewOption);
+    }
+
+    /**
+     * Creates and returns the file menu with all action listeners necessary.
+     * @param theFrame frame reference for the GUI
+     * @param theBoardPanel reference to the panel containing the board
+     * @return JMenu menu representing the file menu
+     * @see #setupViewOption(JFrame, JPanel)
+     */
+    private JMenu setupFileMenu(final JFrame theFrame,
+                                      final MyBoardPanel theBoardPanel) {
+        final JMenu menu = new JMenu("File");
+        menu.setMnemonic(KeyEvent.VK_F);
+
+        final JMenuItem newGameItem = new JMenuItem("New Game");
+        newGameItem.setMnemonic(KeyEvent.VK_N);
+        newGameItem.addActionListener(new ActionListener() {
+        
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                //            theBoard.newGame(theBoardPanel.getGameWidth(),
+                //theBoardPanel.getGameHeight(), null);
+                theBoardPanel.startGame();
+            }
+        });
+        
+        final JMenuItem endGameItem = new JMenuItem("End Game");
+        endGameItem.setMnemonic(KeyEvent.VK_E);
+        endGameItem.addActionListener(new ActionListener() {
+        
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                theBoardPanel.endGame();            
+            }
+        });
+        
+        final JMenuItem quitMenuItem = new JMenuItem("Quit");
+        quitMenuItem.setMnemonic(KeyEvent.VK_Q);
+        quitMenuItem.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                theFrame.dispose();
+                theBoardPanel.endGame();
+            }
+        });
+        menu.add(newGameItem);
+        menu.add(endGameItem);
+        menu.add(quitMenuItem);
+        return menu;
+    }
+
+    /**
+     * Creates and returns the help menu with all options and action listeners.
+     * @return JMenu menu representing the help menu option
+     * @see #setupFileMenu(JFrame, MyBoardPanel)
+     */
+    private JMenu setupHelpMenu() {
+        final JMenu help = new JMenu("Help");
+        help.setMnemonic(KeyEvent.VK_H);
+
+        final JMenuItem aboutItem = new JMenuItem("About");
+        aboutItem.setMnemonic(KeyEvent.VK_A);
+        aboutItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                JOptionPane.showMessageDialog(null, "Display instructions and keys to use.");
+            }
+        });
+
+        help.add(aboutItem);
+        return help;
+
+    }
+
+    /**
+     * Creates and returns a check box menu item to hide the side panel.
+     * @param theFrame frame reference to the GUI
+     * @param thePanel board panel reference
+     * @return JCheckBoxMenuItem check box to show/hide the side panel
+     * @see #setupHelpMenu()
+     */
+    private JCheckBoxMenuItem setupViewOption(final JFrame theFrame, final JPanel thePanel) {
+        final JCheckBoxMenuItem view = new JCheckBoxMenuItem("View side panel");
+        view.setMnemonic(KeyEvent.VK_V);
+
+        view.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                if (view.isSelected()) {
+                    theFrame.add(thePanel, BorderLayout.EAST);
+                } else {
+                    theFrame.remove(thePanel);
+                }
+                theFrame.pack();
+            }
+        });
+        return view;
+    }
+}

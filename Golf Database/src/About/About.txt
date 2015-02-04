@@ -1,0 +1,70 @@
+Golf Database is a program used to keep track of golf players for any number
+of college teams.
+
+A particular player's information will be displayed when selected in the list
+of players at the right of the form.
+
+Information Listed:
+
+First Name: (Required)
+Last Name: (Required)
+Email Address: must be valid if entered.
+Phone Number: (Required)
+Team Rank: (Required) Unique for each member of a particular team.
+Image file: Player portrait (Must be under 200 x 350).
+
+Functions:
+
+File:
+    
+    New: Create a new team and save it as a new file or overwrite an existing
+         file.
+
+    Open: Open an existing file.
+
+    Save: Save current team to the current file. Progress will not be saved
+          otherwise, so it is a good idea to use this function often.
+
+    Save As: Save the current team roster to a new file or overwrite an 
+             existing file.
+
+    Print: Print the entire form.
+
+    Exit: Quits the application.
+
+Sort:
+
+    By Last Name: Sorts and displays the current roster in alphabetical order
+                  according to player's last names.
+
+    By Team Rank: Sort and displays the current roster in numerical order
+                  according to player's individual team ranks.
+
+Action:
+
+    Add New Golfer: Add a new golfer to the current team if all required input
+                    is valid.
+
+    Edit Golfer: Edit the information for the selected Golfer and overwrite
+                 that golfer if all input is valid.
+
+    Delete Golfer: Delete the selected Golfer from the current team.
+
+    Search Golfer: Searches for and selects the desired golfer from the current
+                   team using either first and/or last name or team rank,
+                   assuming a golfer can be found and input is valid.
+
+    Order Ranks: While maintaining the overall order of players on the current
+                 team, sets the ranks to start at 1 and increase sequentially
+                 by 1. (Before: 3, 5, 6, 10) (After: 1, 2, 3, 4)
+
+    Swap Ranks: Switches the currently selected players team rank with the
+                input rank, so long as the input rank exists.
+
+Making it easy to create, edit, and maintain a list of players, Golf Database
+should be all you need to keep track of your team!
+
+For further questions and comments please email the developer at
+brent.young@go.shoreline.edu
+
+Version 1.1

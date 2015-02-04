@@ -1,0 +1,186 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="fill_parent" tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+    <TextView android:text="@string/greeting" android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp"
+        android:id="@+id/text_greet"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:gravity="center"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+
+        >
+
+
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/potato_image"
+            android:visibility="visible"
+            android:alpha="255"
+            android:src="@drawable/body">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/arm_image"
+            android:visibility="invisible"
+            android:src="@drawable/arms">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/shoe_image"
+            android:visibility="invisible"
+            android:src="@drawable/shoes">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/glasses_image"
+            android:visibility="invisible"
+            android:src="@drawable/glasses">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/ears_image"
+            android:visibility="invisible"
+            android:src="@drawable/ears">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/nose_image"
+            android:visibility="invisible"
+            android:src="@drawable/nose">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/mouth_image"
+            android:visibility="invisible"
+            android:src="@drawable/mouth">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/mustache_image"
+            android:visibility="invisible"
+            android:src="@drawable/mustache">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/eyebrows_image"
+            android:visibility="invisible"
+            android:src="@drawable/eyebrows">
+        </ImageView>
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/hat_image"
+            android:visibility="invisible"
+            android:src="@drawable/hat">
+        </ImageView>
+
+
+        <ImageView android:layout_width="fill_parent" android:layout_height="match_parent"
+            android:padding="5dp"
+            android:cropToPadding="true"
+            android:id="@+id/eyes_image"
+            android:visibility="invisible"
+            android:src="@drawable/eyes">
+        </ImageView>
+
+
+
+        </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="@string/prompt"
+        android:gravity="center"/>
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rowCount="5"
+        android:columnCount="4">
+
+
+        <CheckBox android:clickable="true" android:id="@+id/checkarms" android:text="Arms"
+            android:layout_column="1" android:layout_row="0"
+            android:enabled="true" android:onClick="boxChecked"/>
+
+        <CheckBox android:clickable="true" android:id="@+id/checknose" android:text="Nose"
+            android:layout_column="1" android:layout_row="1"
+            android:enabled="true" android:onClick="boxChecked"/>
+
+
+        <CheckBox android:clickable="true" android:id="@+id/checkears" android:text="Ears"
+            android:layout_column="1" android:layout_row="2"
+            android:enabled="true" android:onClick="boxChecked"/>
+
+        <CheckBox android:clickable="true" android:id="@+id/checkeyes" android:text="Eyes"
+            android:layout_column="1" android:layout_row="3" android:onClick="boxChecked"
+            android:enabled="true"/>
+
+        <CheckBox android:clickable="true" android:id="@+id/checkhat" android:text="Hat"
+            android:layout_column="1" android:layout_row="4" android:onClick="boxChecked"
+            android:enabled="true"/>
+
+        <CheckBox android:clickable="true" android:id="@+id/checkshoes" android:text="Shoes"
+            android:onClick="boxChecked" android:layout_column="3" android:layout_row="0"
+            android:enabled="true"/>
+
+        <CheckBox android:clickable="true" android:id="@+id/checkglasses" android:text="Glasses"
+            android:onClick="boxChecked" android:layout_column="3" android:layout_row="1"
+            android:enabled="true"/>
+
+
+        <CheckBox android:clickable="true" android:id="@+id/checkmouth" android:text="Mouth"
+            android:onClick="boxChecked" android:layout_column="3" android:layout_row="2"
+            android:enabled="true"/>
+
+
+        <CheckBox android:clickable="true" android:id="@+id/checkmustache" android:text="Mustache"
+            android:onClick="boxChecked" android:layout_column="3" android:layout_row="3"
+            android:enabled="true"/>
+
+
+        <CheckBox android:clickable="true" android:id="@+id/checkeyebrows" android:text="Eyebrows"
+            android:onClick="boxChecked" android:layout_column="3" android:layout_row="4"
+            android:enabled="true"/>
+
+
+
+
+        </GridLayout>
+
+
+</LinearLayout>

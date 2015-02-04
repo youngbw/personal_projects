@@ -1,0 +1,15 @@
+Offensive Items;
+DestroyerOfWorlds, 
+
+Defensive Items;
+ShieldOfTheRighteous
+
+Consumables;
+HealthPotion, MagicPotion, 
+
+Attacks;
+ThunderingSmash, QuickStrike, HealingTouch, 
+
+Other;
+
+EndShop;

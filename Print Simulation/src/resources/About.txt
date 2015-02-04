@@ -1,0 +1,77 @@
+Print Simulation is designed to simulate a set of servers handling print tasks
+in a given environment. 
+
+For each simulation the average time between task
+arrivals, the number of servers available, the average size of each print task,
+and the maximum amount of time the simulation will be allowed to run
+(in seconds) are set by the user prior to the simulation.
+
+General:
+    Server's service rates are represented as percentages placed after the 
+server ID, followed by the individual service rate for the print task being
+served (ex: A(98%, 100%)). This represents an average service rate of .98 pages
+per second for server A, with a 1.0 page per second service rate for the
+current print task.
+
+Menus:
+
+File: 
+    Reset: Clears the form and resets all values to their original states.
+           This function must be performed in order to initiate a subsequent
+           simulation.
+
+    Clear: Clears the text area. However, the text can be retrieved by toggling
+           the statistics button.
+
+    Print: Prints the text currently in the text area.
+
+    Exit: Quits the application.
+
+Stats:
+    Detailed Statistics: When checked this option allows for viewing of
+            statistics pertaining to each individual print task that was
+            completed in the last simulation, in the order finished.
+
+Help:
+    About: Displays the About form for the application.
+
+
+Functions (preference tab):
+
+Lock: Locks in the entered values for the subsequent simulation after validating
+      that all input is entered in proper fashion. This will also reset
+      all values to their original states. Can also be accomplished through
+      pressing enter in any text value text fields or after pressing the
+      default value button.
+
+Edit: Reopens the value text fields for editing. Used as a check to prevent
+      accidental use of the Lock Button.
+
+Quit: Exits the application.
+
+Default Values: Sets each value text field to a predetermined value for ease
+                of use and a good benchmark for simulations.
+
+
+Functions (output tab):
+
+    Sim to Max: Runs the simulation to the maximum time.
+
+    Sim one Second: Runs one second of the simulation.
+
+    Reset: Clears the form and resets all values to their original states.
+           This function must be performed in order to initiate a subsequent
+           simulation.
+
+    Statistics: Displays statistics for the last run simulation. Available
+                as long as a simulation has been run and has not been reset.
+
+Other:
+
+    Progress Bar: Displays progress starting from time 0 seconds to the input
+                  maximum time in seconds for the simulation in question.
+
+For further questions and comments please email the developer at
+brent.young@go.shoreline.edu
+
+Version 1.1

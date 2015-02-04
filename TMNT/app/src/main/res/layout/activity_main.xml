@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"  tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+    <Spinner
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/turtles"
+        android:prompt="@string/turtle_prompt"
+        android:clickable="true"
+        android:id="@+id/turtle_chooser"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:spinnerMode="dropdown"
+        android:textAlignment="gravity"
+        android:transitionGroup="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/result"
+        android:gravity="center"
+        android:layout_weight="1"
+    />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:id="@+id/turtle_image"
+        android:layout_weight="12"
+        android:cropToPadding="true"
+        />
+
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        android:layout_weight="5"
+        android:layout_gravity="center|bottom">
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="5dp"
+            android:id="@+id/info"
+            android:text=""
+            android:gravity="center"
+            />
+
+
+        </ScrollView>
+
+</LinearLayout>

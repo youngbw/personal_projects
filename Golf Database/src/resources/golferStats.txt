@@ -1,0 +1,5 @@
+Tiger,Woods,tiger@gmail.com,206-111-1111,1,/Users/BrentYoung/Documents/CSE 143/NetBeansProjects/Golf Database/src/resources/Tiger1.jpeg
+Justin,Rose, ,206-425-4775,2,/Users/BrentYoung/Documents/CSE 143/NetBeansProjects/Golf Database/src/resources/Justin1.jpeg
+Adam,Scott,ascott@yahoo.com,206-559-3398,3,/Users/BrentYoung/Documents/CSE 143/NetBeansProjects/Golf Database/src/resources/Adam1.jpeg
+Rory,McIlroy,theroy@yahoo.com,425-799-1482,4,/Users/BrentYoung/Documents/CSE 143/NetBeansProjects/Golf Database/src/resources/Rory1.jpeg
+Brandt,Snedeker,lovetogolf@hotmail.com,206-849-2592,5,/Users/BrentYoung/Documents/CSE 143/NetBeansProjects/Golf Database/src/resources/Brandt1.jpeg

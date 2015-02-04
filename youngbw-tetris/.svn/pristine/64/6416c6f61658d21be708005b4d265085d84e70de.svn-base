@@ -1,0 +1,96 @@
+/*
+ * 
+ */
+package view;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+
+import javax.swing.JPanel;
+
+import model.Board;
+
+/**
+ * This panel displays the stats for the current game graphically.
+ * @author BrentYoung
+ * @version 1.0
+ * @see MySidePanel
+ */
+@SuppressWarnings("serial")
+public class StatsPanel extends JPanel {
+
+    /**
+     * Default color the panel.
+     * @see MyBoardPanel
+     */
+    private static final Color DEFAULT_COLOR = Color.WHITE;
+    
+    /**
+     * Default font size for the text to be written in.
+     */
+    private static final int FONT_SIZE = 20;
+    
+    /**
+     * X value for the graphical text to be translated over.
+     * Keeps String from writing on the border.
+     */
+    private static final int MY_X = 10;
+    
+    /**
+     * Number of lines cleared from the current game.
+     * @see #myLevel
+     */
+    private int myNumLines;
+    
+    /**
+     * Score for the current game.
+     * @see #myNumLines
+     */
+    private int myScore;
+    
+    /**
+     * Current level of the game.
+     * @see #myScore
+     */
+    private int myLevel;
+    
+    /**
+     * Constructor for this panel, initializes all stats values, sets the
+     * layout and background color.
+     * @param theBoard reference to the board object, may need to be used later for stats
+     */
+    public StatsPanel(final Board theBoard) {
+        myNumLines = 0;
+        myScore = 0;
+        myLevel = 0;
+        setLayout(new GridLayout());
+        setBackground(DEFAULT_COLOR);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * Overridden paint component method, draws all of the statistical
+     * values onto the stats panel.
+     * @see MyBoardPanel.#paintComponent(Graphics)
+     */
+    @Override
+    public void paintComponent(final Graphics theGraphics) {
+        super.paintComponent(theGraphics);
+        final Graphics2D g2D = (Graphics2D) theGraphics;
+        final String lineString = "Lines Cleared: " + myNumLines;
+        final String levelString = "Level: " + myLevel;
+        final String scoreString = "Score: " + myScore;
+        
+        g2D.setStroke(new BasicStroke(2));
+        g2D.setFont(new Font("Comic Sans MS", Font.ITALIC, FONT_SIZE));
+        g2D.setColor(Color.BLACK);
+        
+        g2D.drawString(scoreString, MY_X, getHeight() / (2 * 2));
+        g2D.drawString(levelString, MY_X, getHeight() / 2);
+        g2D.drawString(lineString, MY_X, getHeight() - getHeight() / (2 * 2));
+    }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Potato Head</string>
+    <string name="action_settings">Settings</string>
+    <string name="greeting">Mr. Potato Head</string>
+    <string name="prompt">Choose which features to add to Mr. Potato Head:</string>
+
+</resources>

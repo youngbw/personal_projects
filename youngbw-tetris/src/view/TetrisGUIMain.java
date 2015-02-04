@@ -1,0 +1,31 @@
+/*
+ * TCSS 305C - Autumn 2013
+ * Tetris A - youngbw-TetrisA
+ */
+package view;
+
+/**
+ * This class starts up the Tetris GUI for interaction.
+ * @author BrentYoung
+ * @version 1.0
+ */
+public final class TetrisGUIMain {
+
+    /**
+     * Overloaded private constructor to cover illegal state.
+     * @see TetrisGUI
+     */
+    private TetrisGUIMain() {
+        throw new IllegalStateException();
+    }
+    
+    /**
+     * @param theArgs arguments passed into the main method
+     */
+    public static void main(final String[] theArgs) {
+        final TetrisGUI gui = new TetrisGUI();
+        gui.start();
+
+    }
+
+}

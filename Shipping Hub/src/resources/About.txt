@@ -1,0 +1,53 @@
+Brent Young Shipping Service:
+    A hub designed to make the shipping and tracking of any number of Parcels.
+Scan the Parcel into the system by entering all of the pertinent information
+and add it to the list of parcels you would like to send. Parcels can then be
+edited and updated, scrolled through, removed from the list altogether, or
+printed for easy viewing while performing tasks on another parcel.
+
+Scan New:
+    Pressing 'Enter' or clicking on either the 'Scan New' button or menu option
+will enable the address fields for use and stamp the parcel with a parcel
+identification number and arrival time.
+
+Add:
+    The 'Add' button or menu item allows the system to save the entered address
+information to the parcel, and adds it to a list of sent parcels.
+
+Edit:
+    The 'Edit' button or menu item enables the text fields so that the 
+currently selected parcel's address information may be changed. 
+The parcel identification number (parcel ID) will also be updated to reflect 
+that changes have been made. 
+
+Update:
+    The 'Update' button or menu item saves the parcel with the newly entered
+information, entered after using the 'Edit' function.
+
+Remove:
+    The 'Remove' button or menu item removes permanently the selected parcel.
+To retrieve this parcel the information must be entered once more using the
+'Scan New' function.
+
+Next/Back:
+    Scroll through the parcels currently allocated for the selected state.
+Parcel information for the selected parcel will be displayed in the text fields.
+
+State Selection:
+    Selecting a state will display the parcel ID numbers of the
+parcels allocated to be sent to the selected state.
+
+Printing the parcel:
+    The 'Print' function will print all parcel information including parcel ID,
+arrival time, and all recipient information both to a text document as well
+as to a pop-up panel that will remain until closed.
+
+Clearing the fields:
+    The 'Clear' function will clear all fields, aside from parcel ID and 
+arrival time, of any text currently occupying them.
+
+Search:
+    The 'Search' function allows the user to locate a parcel via recipient name
+or recipient state abbreviation, showing all results pertinent to the search 
+criteria placed into the text field by the user. Once a parcel is selected 
+all parcel information will be displayed in an adjacent window.

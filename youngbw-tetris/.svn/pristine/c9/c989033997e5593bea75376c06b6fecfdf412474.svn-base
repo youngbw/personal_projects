@@ -1,0 +1,176 @@
+/*
+ * 
+ */
+package view;
+
+
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.JFrame;
+
+
+import model.Board;
+
+/**
+ * This class represents the graphical user interface for the Tetris program,
+ * displaying a user-interactive JFrame and its components.
+ * @author BrentYoung
+ * @version 1.0
+ * @see MyBoardPanel
+ * @see MySidePanel
+ */
+public class TetrisGUI extends KeyAdapter implements Observer {
+
+    /**
+     * Toolkit to obtain the screen size for centering of the GUI.
+     * @see Toolkit
+     */
+    private static final Toolkit KIT = Toolkit.getDefaultToolkit();
+    
+    /**
+     * Variable to hold the size of the screen.
+     * @see Dimension
+     */
+    private static final Dimension SCREEN_SIZE = KIT.getScreenSize();
+    
+    /**
+     * Width of the screen in pixels.
+     * @see Dimension
+     */
+    private static final int SCREEN_WIDTH = SCREEN_SIZE.width;
+    
+    /**
+     * Height of the screen.
+     * @see  Dimension
+     */
+    private static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
+    
+    /**
+     * Preferred size dimension object.
+     */
+    private static final Dimension PREFERRED_SIZE = new Dimension(600, 400);
+    
+    /**
+     * Frame reference, holds key listener and observer.
+     * @see #myPanel
+     */
+    private JFrame myFrame;
+    
+    /**
+     * MyBoardPanel reference, holds the board variable and supports
+     * its functionality.
+     * @see Board
+     * @see #myBoard
+     */
+    private MyBoardPanel myPanel;
+    
+    /**
+     * Panel reference for the panel that holds the drawing of the next
+     * piece to drop and the stats for the current game.
+     * @see MySidePanel
+     * @see #myPanel
+     */
+    private MySidePanel mySidePanel;
+    
+    /**
+     * Board reference, instantiated here and passed to necessary panels.
+     * @see MyBoardPanel
+     * @see MySidePanel
+     */
+    private Board myBoard;
+
+    /**
+     * Constructor for this GUI, initializes the board and main frame as
+     * well as the panel to hold the board.
+     * @see MyBoardPanel
+     * @see #myFrame
+     */
+    TetrisGUI() {
+        myBoard = new Board();
+        myFrame = new JFrame("TCSS 305C Tetris");
+        myFrame.addKeyListener(this);
+        myPanel = new MyBoardPanel(myBoard);
+    }
+
+    /**
+     * Sets all initial values for initialized variables.
+     * @see #myFrame
+     * @see #myPanel
+     */
+    public final void start() {
+        myFrame.setResizable(false);
+        myFrame.setSize(PREFERRED_SIZE);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setLocation(SCREEN_WIDTH / 2 - myFrame.getWidth() / 2, 
+                        SCREEN_HEIGHT / 2 - myFrame.getHeight() / 2);
+        mySidePanel = new MySidePanel(myBoard);
+        myFrame.setJMenuBar(new MyMenuBar(myFrame, myPanel, mySidePanel));
+        myFrame.add(myPanel);
+        myBoard.addObserver(this);
+        myFrame.pack();
+        myFrame.setVisible(true);
+    }
+
+    /**
+     * Updates the GUI based on the state of the board.
+     * @param theO object that called the notifyObservers method.
+     * @param theArg argument passed by theO
+     * @see Board
+     */
+    @Override
+    public void update(final Observable theO, final Object theArg) {
+        myFrame.repaint();
+        mySidePanel.repaint();
+    }
+
+    /**
+     * Key released event for movement of pieces as they
+     * descend down the board.
+     * @param theEvent event fired by the Key Listener
+     * @see #myBoard
+     */
+    @Override
+    public void keyReleased(final KeyEvent theEvent) {
+        final int code = theEvent.getKeyCode();
+        if (code == KeyEvent.VK_LEFT) {
+            myBoard.moveLeft();
+        } else if (code == KeyEvent.VK_DOWN) {
+            myBoard.moveDown();
+        } else if (code == KeyEvent.VK_RIGHT) {
+            myBoard.moveRight();
+        } else if (code == KeyEvent.VK_SPACE) {
+            myBoard.hardDrop();
+        } else if (code == KeyEvent.VK_SHIFT) {
+            myBoard.rotate();
+        }
+    }
+    
+    /**
+     * Scales the passed image to fit in the desired size.
+     * @param theSrcImg image to be scaled
+     * @param theW width to scale to
+     * @param theH height to scale to
+     * @return Image of size [w,h]
+     * @see PicturePanel 
+     */
+    public static Image getScaledImage(final Image theSrcImg, final int theW, final int theH) {
+        final BufferedImage resizedImg = new BufferedImage(theW, theH,
+                                           BufferedImage.TYPE_INT_RGB);
+        final Graphics2D g2 = resizedImg.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(theSrcImg, 0, 0, theW, theH, null);
+        g2.dispose();
+        return resizedImg;
+    }
+}

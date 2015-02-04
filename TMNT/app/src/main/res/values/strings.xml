@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TMNT</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="turtle_prompt">Choose a turtle</string>
+
+    <string name="leo_text">The leader of the Turtles. Leonardo aspires to be a brave,
+        decisive, perfect hero. Unfortunately, he\'s an inexperienced teen (for the moment at least)
+        with three smart-aleck brothers. It\'s the gap between his aspiration and current situation
+        that is the greatest source of frustration in Leo\'s life. He\'s the most driven of the four
+        Turtles, training and studying relentlessly. He tends to be hard on himself, but his diligence
+        does not go unnoticed; he is the favored student of Splinter,
+        whose approval he very much craves.</string>
+
+
+
+    <string name="mike_text">Physically the smallest of the Turtles and the least mature.
+        Mikey is easily distracted and enthusiastic about... well, pretty much everything. He\'s
+        also extremely creative. He has a thousand ideas, and every now and then, one of them
+        will be brilliant. This combination of creativity and lack of focus gives him a kind
+        of "flow" that the other Turtles cannot match. He\'s a social animal (well, mutant), and
+        more than the others, begs to be part of the real world.</string>
+
+
+
+
+    <string name="don_text">Donatello is the team inventor and weaponeer. He creates all of their
+        gadgets from the simplest bo-staff to their incredible vehicles. He\'s utterly brilliant,
+        able to cobble together fantastic stuff from things he\'s literally scrounged from a trash
+        heap. He\'s obsessively detail-oriented and often impatient that his brothers can\'t keep up
+        with him intellectually. But Donnie also happens to be the most reclusive and socially
+        awkward of the Turtles - especially when April is on her way!</string>
+
+
+
+
+    <string name="raph_text">Raphael is the most violent of the four brothers.
+        A straight-up brawler, he has very little patience for things like stealth,
+        hiding in shadows, or keeping his voice down. While he\'s fiercely loyal to his brothers,
+        he\'s also often the one giving them a hard time. Raphael is also the one most likely
+        to strike out on his own when he feels slighted or under-appreciated. His closest
+        confidante was his pet turtle named Spike. Raphael\'s temper can get the better of him,
+        causing him to get into situations over his head.</string>
+
+
+    <string-array name="turtles">
+
+        <item>Leonardo</item>
+        <item>Raphael</item>
+        <item>Donatello</item>
+        <item>Michelangelo</item>
+
+    </string-array>
+
+</resources>

@@ -1,0 +1,74 @@
+Tetris Help:
+
+Default Controls:
+
+	First Player:
+	
+		Move Left -- A
+	
+		Move Right -- D
+	
+		Move Down -- S
+	
+		Rotate Piece -- W
+	
+		Hard Drop -- E
+
+	Second Player (if playing):
+	
+		Move Left -- Left Arrow Key
+	
+		Move Right -- Right Arrow Key
+	
+		Move Down -- Down Arrow Key
+	
+		Rotate Piece -- Shift Key
+	
+		Hard Drop -- Space Bar
+	
+	
+File Menu:
+	
+	New Game: Starts a new game. Only enabled when there is no game currently in progress.
+	
+	Pause: Temporarily stops the game in progress. The game can be resumed by selecting
+		   this item once more.
+			
+		   **This can be done by hitting the 'Y' key while holding CTRL**
+			
+	End Game: Permanently stops the game in progress. A new game can then be started by
+			  pressing the 'New Game' button.
+			  
+	Quit: Exits the Tetris program.
+	
+
+Options Menu:
+
+	Two Player Mode: This starts a new game for two players who can square off head to head
+				     and see who can get the better score!
+
+Help Menu:
+
+	About: Displays a help dialogue.
+	
+	
+View Side Panel:
+
+	Toggles the side panel's visibility. When this option is not selected the next piece to drop,
+	the score, number of lines cleared, and the level, as well as the theme picture will be hidden
+	from view.
+	
+	This view enables a simplified view of the game, removing the background image and other
+	distracting stimuli from the users view.
+	
+Scoring:
+
+	Levels will advance every 10 lines cleared.
+	
+	5 points multiplied by the level per line cleared gained if less than three lines
+	
+	double the normal amount of points gained if the user cleared 4 lines
+	
+	Points equal to the level for each piece dropped successfully
+	
+	As time goes on and levels go up the game will move faster and faster, so rack up those points quick!

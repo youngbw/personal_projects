@@ -1,0 +1,65 @@
+/*
+ * 
+ */
+package view;
+
+import java.awt.Color;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+/**
+ * Panel that displays the Theme Picture in the side panel.
+ * @author BrentYoung
+ * @version 1.0
+ * @see MySidePanel
+ * @see PiecePanel
+ */
+@SuppressWarnings("serial")
+public class PicturePanel extends JPanel {
+
+    /**
+     * File of the picture that is to be used as the theme picture.
+     */
+    private static final String PICTURE_FILE = "./resources/tetris.jpg";
+    
+    /**
+     * Default color for the panel.
+     */
+    private static final Color DEFAULT_COLOR = Color.WHITE;
+    
+    /**
+     * Default width for the panel.
+     * @see #DEFAULT_HEIGHT
+     */
+    private static final int DEFAULT_WIDTH = 200;
+    
+    /**
+     * Default height for the panel.
+     * @see #DEFAULT_WIDTH
+     */
+    private static final int DEFAULT_HEIGHT = 200;
+    
+    /**
+     * Icon to have the image set as its image in order to display
+     * it on the picture panel.
+     * @see #PICTURE_FILE
+     */
+    private ImageIcon myIcon;
+    
+    /**
+     * Constructor for this Picture Panel, initializes the ImageIcon and Label and
+     * sets the Icon to the label.
+     * @see #myIcon
+     * @see #PICTURE_FILE
+     */
+    public PicturePanel() {
+        myIcon = new ImageIcon(PICTURE_FILE);
+        myIcon.setImage(TetrisGUI.getScaledImage(myIcon.getImage(), DEFAULT_WIDTH,
+                                                 DEFAULT_HEIGHT));
+        setBackground(DEFAULT_COLOR);
+        final JLabel label = new JLabel(myIcon);
+        add(label);
+    }
+}
