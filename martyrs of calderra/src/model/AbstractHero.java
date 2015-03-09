@@ -25,19 +25,21 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import talentTree.TalentTreeGUI;
+import layout.CalderraGUI;
 import layout.MyPanel;
 import listeners.MyKeyListener;
 
 public abstract class AbstractHero extends Observable implements Hero, java.io.Serializable {
-
-	
-	private static final long serialVersionUID = 1L;
 	
 	
 	public static final int LEVEL_CAP = 60;
 	public static final int MAX_EQUIP = 6;
 	public static final int MAX_ATTACK = 4;
 	public static final String[] STATS = {"strength", "armor", "speed", "accuracy", "intel", "maxHealth"};
+	
+	private static final long serialVersionUID = 1L;
+	private static final String[] HIT_GIF = {"", "", "", ""};
+	private static final String[] MISS_GIF = {"", "", "", ""};
 	
 	//Map of base stats
 	private HashMap<String, Integer> attributeMap = new HashMap<String, Integer>();
@@ -63,19 +65,22 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 	private String heroClass;
 	private String imageSource;
 	
-	private int level;
-	private int experience;
-	private int experienceNeeded;
-	private int currentHealth;
-	private int maxHealth;
+//	private int level;
+//	private int experience;
+//	private int experienceNeeded;
+//	private int currentHealth;
+//	private int maxHealth;
 	
 	//for fight
+	protected ArrayList<String> enemyMissGif;
+	protected ArrayList<String> enemyHitGif;
 	public double tempHealthPercent;
 	public double tempArmorPercent;
 	public double tempStrengthPercent;
 	public double tempAccuracyPercent;
 	public double tempSpeedPercent;
 	public double tempIntelPercent;
+	public AbstractCard attackToBeUsed;
 	
 	//for fight
 	public int strengthInc;
@@ -95,25 +100,25 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 	
 	//End fight stats
 	
-	private int strength;
-	private int accuracy;
-	private int armor;
-	private int intel;
-	private int speed;
-	private int currentMagicPower;
-	private int maxMagicPower;
-	private int bagCapacity;
-	private int numInBag;
-	
-	private int gold;
+//	private int strength;
+//	private int accuracy;
+//	private int armor;
+//	private int intel;
+//	private int speed;
+//	private int currentMagicPower;
+//	private int maxMagicPower;
+//	private int bagCapacity;
+//	private int numInBag;
+//	
+//	private int gold;
 	private int points;
 	private boolean isInBattle;
 		
-	public AbstractHero() {
-		this("Silith", "", "", null);
+	public AbstractHero(CalderraGUI controller) {
+		this("Silith", "", "", null, controller);
 	}
 	
-	public AbstractHero(String name, String src, String className, String[] initialStats) { 
+	public AbstractHero(String name, String src, String className, String[] initialStats, CalderraGUI controller) { 
 		initializePowerUps();
 		this.name = name;
 		title = "the Meek";
@@ -122,9 +127,11 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		isInBattle = false;
 		enemy = null;
 		oppMiss = false;
-		inventory = new InventoryGUI();
+		inventory = new InventoryGUI(controller);
 		talentTree = new TalentTreeGUI(this);
 		
+		enemyMissGif = new ArrayList<String>();
+		enemyHitGif =  new ArrayList<String>();
 		tempHealthPercent = 0.;
 		tempArmorPercent = 0.;
 		tempStrengthPercent = 0.;
@@ -140,22 +147,22 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		intelInc = 0;
 		healthInc = 0;
 		
-		level = 1;
-		experience = 0;
-		experienceNeeded = 100;
-		currentHealth = 100;
-		maxHealth = 100;
-		strength = 20;
-		accuracy = 20;
-		armor = 20;
-		intel = 20;
-		speed = 20;
-		currentMagicPower = 100;
-		maxMagicPower = 100;
-		gold = 1000;
-		points = 0;
-		bagCapacity = 6; //may not need
-		numInBag = 0;
+//		level = 1;
+//		experience = 0;
+//		experienceNeeded = 100;
+//		currentHealth = 100;
+//		maxHealth = 100;
+//		strength = 20;
+//		accuracy = 20;
+//		armor = 20;
+//		intel = 20;
+//		speed = 20;
+//		currentMagicPower = 100;
+//		maxMagicPower = 100;
+//		gold = 1000;
+//		points = 0;
+//		bagCapacity = 6; //may not need
+//		numInBag = 0;
 		
 		healTime = 0;
 		healAmount = 0;
@@ -164,22 +171,22 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		periodicDamageTime = 0;
 		periodicHealAmount = 0;
 		
-		attributeMap.put("level", level);
-		attributeMap.put("maxHealth", maxHealth);
-		attributeMap.put("currentHealth", currentHealth);
-		attributeMap.put("strength", strength);
-		attributeMap.put("accuracy", accuracy);
-		attributeMap.put("armor", armor);
-		attributeMap.put("intel", intel);
-		attributeMap.put("speed", speed);
-		attributeMap.put("gold", gold);
-		attributeMap.put("experience", experience);
-		attributeMap.put("Experience To Next Level", experienceNeeded);
-		attributeMap.put("points", points);
-		attributeMap.put("maxMagicPower", maxMagicPower);
-		attributeMap.put("currentMagicPower", currentMagicPower);
-		attributeMap.put("capacity", bagCapacity);
-		attributeMap.put("numInBag", numInBag);
+		attributeMap.put("level", 1);
+		attributeMap.put("maxHealth", 100);
+		attributeMap.put("currentHealth", 100);
+		attributeMap.put("strength", 20);
+		attributeMap.put("accuracy", 20);
+		attributeMap.put("armor", 20);
+		attributeMap.put("intel", 20);
+		attributeMap.put("speed", 20);
+		attributeMap.put("gold", 1000);
+		attributeMap.put("experience", 0);
+		attributeMap.put("Experience To Next Level", 100);
+		attributeMap.put("points", 0);
+		attributeMap.put("maxMagicPower", 100);
+		attributeMap.put("currentMagicPower", 100);
+		attributeMap.put("capacity", 6);
+		attributeMap.put("numInBag", 0);
 		attributeMap.put("bossesDefeated", 0);
 		
 		additionalStats.put("strength", 0);
@@ -230,11 +237,6 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		setChanged();
 		notifyObservers(card);
 	}
-	
-//	public void cardGif(AbstractCard card) {
-//		setChanged();
-//		notifyObservers(card);
-//	}
 	
 	public void changed(String str) {
 		setChanged();
@@ -435,6 +437,21 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		return attributeMap.get("numInBag");
 	}
 	
+	public ArrayList<String> getEnemyMissGif() {
+		enemyMissGif = new ArrayList<String>();
+		for (String s: MISS_GIF) {
+			enemyMissGif.add(s);
+		}
+		return this.enemyMissGif;
+	}
+	
+	public ArrayList<String> getEnemyHitGif() {
+		enemyHitGif = new ArrayList<String>();
+		for (String s: HIT_GIF) {
+			enemyHitGif.add(s);
+		}
+		return this.enemyHitGif;
+	}
 	
 	public void showInventory() {
 		if (inventory.isVisible()) {
@@ -528,18 +545,17 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 					talentTree.addTalentPoints(2);
 				}
 				
-				if (getLevel() % 15 == 0) {
+				if (getLevel() % 10 == 0) {
 					this.setChanged();
 					this.notifyObservers("Enable Boss");
 				}
 				
 			} else { //IF LEVEL NOT GAINED
-				
-				attributeMap.put("experience", attributeMap.get("experience") + experienceGained <= attributeMap.get("Experience To Next Level") ?
-						attributeMap.get("experience") + experienceGained : attributeMap.get("Experience To Next Level"));
+				attributeMap.put("experience", attributeMap.get("experience") + experienceGained);
+				//<= attributeMap.get("Experience To Next Level") ?
+				//		attributeMap.get("experience") + experienceGained : attributeMap.get("Experience To Next Level"));
 				
 			}
-			setChanged();
 			//DROPS
 			
 			
@@ -547,7 +563,7 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			
 			int result = JOptionPane.showConfirmDialog(null, "Would you like to continue? (" + 50 * attributeMap.get("level") + " to resurrect)", "Death", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
-				attributeMap.put("gold", attributeMap.get("gold") - 50 * level > 0 ? attributeMap.get("gold") - 50 * level : 0);
+				attributeMap.put("gold", attributeMap.get("gold") - 50 * this.getLevel() > 0 ? attributeMap.get("gold") - 50 * this.getLevel() : 0);
 				attributeMap.put("currentHealth", getmaxHealth() / 2);
 				attributeMap.put("currentMagicPower", getMaxMagicPower() / 2);
 			} else {
@@ -557,10 +573,10 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			}
 		}
 		
-		this.enemy = null;
-		setChanged();
-		notifyObservers("stats");
-		changed("Battle Show");
+//		this.enemy = null;
+//		setChanged();
+//		notifyObservers("stats");
+//		changed("Battle Show");
 	}
 	
 	private void initializePowerUps() {
@@ -775,22 +791,24 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 	
 	public int heal(AbstractCard card, String healType) {
 		if (card.getHealType().equals(Heal.HEAL_TYPE_PERIODIC)) {
-			if (healTime <= card.getPeriodicIncrease()) {
+			if (healTime < card.getPeriodicIncrease()) {
 				healTime = card.getPeriodicIncrease();
 			}
 		}
-		MyPanel.missMarker.offer(new Boolean(true));
+//		MyPanel.missMarker.offer(new Boolean(true));
 		int heal = this.getHit(card);
-		MyPanel.damage.offer(heal);
-		this.attributeMap.put("currentHealth", getcurrentHealth() + heal <= getmaxHealth() ? getcurrentHealth() + heal : getmaxHealth());
+//		MyPanel.damage.offer(heal);
+//		this.attributeMap.put("currentHealth", getcurrentHealth() + heal <= getmaxHealth() ? getcurrentHealth() + heal : getmaxHealth());
+		
+		//line above is side effect, take care of in battle GUI third party class
 		return heal;
 	}
 	
 	public int getHit(AbstractCard card) {
 		if ((this.enemy != null || card instanceof Heal)) {
 			Random rand = new Random();
-			int heroStr = getStrength();
-			int heroIntel = getIntel();
+			int heroStr = this.getStrength();
+			int heroIntel = this.getIntel();
 
 			if ((card instanceof Physical || card instanceof Magical) && getCurrentMagicPower() >= ((AttackCard) card).getCruxCost()) {
 				this.healedLastTurn = false;
@@ -903,7 +921,8 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 				//In the case that the card being used is a heal card
 			} else if (card instanceof Heal && (getCurrentMagicPower() >= ((AttackCard) card).getCruxCost())) {
 				this.healedLastTurn = true;
-				int heal = healAmount;
+				int heal = this.getmaxHealth() / ((Heal)card).getHealAmount();
+				healAmount = heal;
 				double additionalHealAmount = 0;
 				double healPercentIncrease = 0.;
 				
@@ -951,9 +970,9 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			System.out.println("miss");
 			return 0;
 		} else {
-			this.attributeMap.put("currentHealth", Math.max(0, (this.attributeMap.get("currentHealth") - damage)));
+//			this.attributeMap.put("currentHealth", Math.max(0, (this.attributeMap.get("currentHealth") - damage)));
 			System.out.println(damage + " " + this.getClass().getSimpleName() + " current Health: " + getcurrentHealth());
-			this.changed("hit");
+//			this.changed("hit");
 			MyPanel.missMarker.offer(new Boolean(true));
 			setChanged();
 			notifyObservers("stats");

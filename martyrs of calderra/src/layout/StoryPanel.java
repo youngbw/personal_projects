@@ -17,12 +17,13 @@ public class StoryPanel extends MyPanel {
 	private final String TRAINSOURCE = "src/resources/druid.jpg";
 	private final String BOSSSOURCE = "src/resources/warrior.jpg";
 	
-	MyPanel train;
-	MyPanel boss;
+	private CalderraGUI controller;
+	private MyPanel train;
+	private MyPanel boss;
 	
-	public StoryPanel(String src, int gridRow, int gridCol, AbstractHero hero) {
+	public StoryPanel(String src, int gridRow, int gridCol, CalderraGUI controller) {
 		super(src);
-		this.hero = hero;
+		this.controller = controller;
 		setup(gridRow, gridCol);
 	}
 	
@@ -32,10 +33,10 @@ public class StoryPanel extends MyPanel {
 		MyPanel story = new smallStoryPanel(STORYSOURCE);
 		story.setBorder(new LineBorder(Color.WHITE));
 		
-		train = new trainPanel(TRAINSOURCE, this.hero);
+		train = new trainPanel(TRAINSOURCE, this.controller);
 		train.setBorder(new LineBorder(Color.WHITE));
 		
-		boss = new bossPanel(BOSSSOURCE, this.hero);
+		boss = new bossPanel(BOSSSOURCE, controller);
 		boss.setBorder(new LineBorder(Color.WHITE));
 		
 		this.add(story);
@@ -45,13 +46,13 @@ public class StoryPanel extends MyPanel {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero && !(o instanceof AbstractVillain)) {
-//			((AbstractHero) arg).addObserver(this);
-			this.hero = (AbstractHero) arg;
-			train.update(o, arg);
-			boss.update(o, arg);
-		}
-		
+//		if (arg instanceof AbstractHero && !(o instanceof AbstractVillain)) {
+////			((AbstractHero) arg).addObserver(this);
+//			this.hero = (AbstractHero) arg;
+//			
+//		}
+		train.update(o, arg);
+		boss.update(o, arg);
 	}
 
 }

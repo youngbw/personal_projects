@@ -1,10 +1,14 @@
 package interfaces;
 
+import java.util.ArrayList;
+
 public interface AttackCard {
 
-	void use();
+	void getUpgrade();
+	void getDowngrade();
 	
 	int getCruxCost();
 	
-	String[] getGifSrc();
+	ArrayList<String> getAttackGif();
+	
 }

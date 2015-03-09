@@ -1,5 +1,6 @@
 package model;
 
+import layout.CalderraGUI;
 import interfaces.Weapon;
 
 @SuppressWarnings("serial")
@@ -9,12 +10,9 @@ public class ShieldOfTheRighteous extends AbstractCard implements Weapon {
 	private static final String CLASSNAME = "Shield of the Righteous";
 	private static final int COST = 40;
 	
-	public ShieldOfTheRighteous() {
-		super();
-	}
 	
-	public ShieldOfTheRighteous(AbstractHero hero) {
-		super(hero, SRC, CLASSNAME);
+	public ShieldOfTheRighteous(CalderraGUI controller) {
+		super(SRC, CLASSNAME, controller);
 		this.cost = COST;
 	}
 	

@@ -31,28 +31,28 @@ import model.Warrior;
 @SuppressWarnings("serial")
 public class MenuBar extends JMenuBar {
 
-	private AbstractHero hero;
-	private CalderraGUI gui;
+//	private AbstractHero hero;
+	private CalderraGUI controller;
 	public static boolean chosen;
 	public String choice;
 	
-	public MenuBar(AbstractHero hero, CalderraGUI gui) {
+	public MenuBar(CalderraGUI controller) {
 		this.setBackground(Color.BLACK);
 		this.setForeground(Color.CYAN);
-		this.hero = hero;
+//		this.hero = hero;
 		choice = "";
 		chosen = false;
-		setup(gui);
+		setup(controller);
 	}
 	
 	
-	private void setup(CalderraGUI gui) {
-		add(createFileMenu(gui));
-		this.gui = gui;
+	private void setup(CalderraGUI controller) {
+		add(createFileMenu(controller));
+		this.controller = controller;
 	}
 	
 	
-	private JMenu createFileMenu(final CalderraGUI gui) {
+	private JMenu createFileMenu(final CalderraGUI controller) {
 		JMenu menu = new JMenu("FILE");
 //		menu.setBackground(Color.BLACK);
 //		menu.setForeground(Color.CYAN);
@@ -64,7 +64,7 @@ public class MenuBar extends JMenuBar {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CharacterSelectGUI charGUI = new CharacterSelectGUI(gui);
+				CharacterSelectGUI charGUI = new CharacterSelectGUI(controller);
 			}
 		});
 		menu.add(newGameItem);
@@ -115,7 +115,7 @@ public class MenuBar extends JMenuBar {
 		
 		try {
 			//Save Changes
-			int result = JOptionPane.showConfirmDialog(gui, "Save Character?", "Save", JOptionPane.YES_NO_OPTION);
+			int result = JOptionPane.showConfirmDialog(controller, "Save Character?", "Save", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 				saveCharacter();
 			}
@@ -185,8 +185,8 @@ public class MenuBar extends JMenuBar {
 //			lineScan.useDelimiter(", ");
 //			String line = lineScan.next();
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("./src/resources/characters/" + theChoice + ".ser"));
-			gui.setHero((AbstractHero)ois.readObject());
-			System.out.println("Loaded instance of " + (this.hero.getClass().getSimpleName()));
+			this.controller.setHero((AbstractHero)ois.readObject());
+			System.out.println("Loaded instance of " + (this.controller.getHero().getClass().getSimpleName()));
 //			lineScan.close();
 			ois.close();
 		} catch (IOException e) {
@@ -201,15 +201,15 @@ public class MenuBar extends JMenuBar {
 		//update, doesn't seem to need it..continue to check if all stats are preserved, mapped, etc.
 		
 		try {
-			FileOutputStream os = new FileOutputStream(new File("./src/resources/characters/" + this.hero.getFullName() + " - " + 
-						this.hero.getHeroClass() + " - " + this.hero.getLevel() + ".ser"));
+			FileOutputStream os = new FileOutputStream(new File("./src/resources/characters/" + this.controller.getHero().getFullName() + " - " + 
+						this.controller.getHero().getHeroClass() + " - " + this.controller.getHero().getLevel() + ".ser"));
 			
 			File myFile = new File("./src/resources/characters/names.txt");
 			Scanner fileScan = new Scanner(myFile);
 			String writeString = "";
 			while (fileScan.hasNextLine()) {
 				String line = fileScan.nextLine();
-				if (!line.contains(this.hero.getFullName() + " - " + this.hero.getHeroClass() + " - " + this.hero.getLevel())) {
+				if (!line.contains(this.controller.getHero().getFullName() + " - " + this.controller.getHero().getHeroClass() + " - " + this.controller.getHero().getLevel())) {
 					writeString += line + "\n";
 				}
 				
@@ -217,12 +217,12 @@ public class MenuBar extends JMenuBar {
 			fileScan.close();
 			PrintStream ps = new PrintStream("./src/resources/characters/names.txt");
 			
-			ps.print(writeString + this.hero.getFullName() + " - " + this.hero.getHeroClass() + " - " + this.hero.getLevel() + "\n");
+			ps.print(writeString + this.controller.getHero().getFullName() + " - " + this.controller.getHero().getHeroClass() + " - " + this.controller.getHero().getLevel() + "\n");
 			
 			ps.close();
 			
 			ObjectOutputStream objOS = new ObjectOutputStream(os);
-			objOS.writeObject(this.hero);
+			objOS.writeObject(this.controller.getHero());
 			
 			os.close();
 			objOS.close();
@@ -236,9 +236,9 @@ public class MenuBar extends JMenuBar {
 	}
 	
 	
-	public void setHero(AbstractHero hero) {
-		this.hero = hero;
-	}
-	
+//	public void setHero(AbstractHero hero) {
+//		this.hero = hero;
+//	}
+//	
 	
 }

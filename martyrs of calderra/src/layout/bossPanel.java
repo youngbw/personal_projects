@@ -15,23 +15,23 @@ import model.AbstractVillain;
 public class bossPanel extends MyPanel implements MouseListener, UserInteractive {
 
 	private boolean enabled;
-	AbstractHero hero;
+	private CalderraGUI controller;
 	BattleGUI battle;
-	private int numBossesDefeated;
+//	private int numBossesDefeated;
 	
-	public bossPanel(String src, AbstractHero hero) {
+	public bossPanel(String src, CalderraGUI controller) {
 		super(src);
-		this.hero = hero;
-		this.numBossesDefeated = 0;
+		this.controller = controller;
+//		this.numBossesDefeated = 0;
 		this.addMouseListener(this);
-//		this.hero.addObserver(this);
+		this.controller.getHero().addObserver(this);
 		this.enabled = false;
 		repaint();
 	}
 	
 	
 	public void mouseClicked(MouseEvent e) {
-		battle = new BattleGUI(this.hero);
+		battle = new BattleGUI(this.controller);
 		battle.setVisible(true);
 	}
 
@@ -62,19 +62,19 @@ public class bossPanel extends MyPanel implements MouseListener, UserInteractive
 			}
 		}
 		
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-//			this.hero.addObserver(this);
-			
-//			if (battle != null) {
-//				battle.update(o, arg);
-////				this.hero.addObserver(battle);
+//		if (arg instanceof AbstractHero) {
+//			this.hero = (AbstractHero) arg;
+////			this.hero.addObserver(this);
+//			
+////			if (battle != null) {
+////				battle.update(o, arg);
+//////				this.hero.addObserver(battle);
+////			}
+//			
+//			if (this.hero.getLevel() % 15 == 0 && this.hero.getBossesDefeated() < this.hero.getLevel() / 15) {
+//				this.setEnabled();
 //			}
-			
-			if (this.hero.getLevel() % 15 == 0 && this.hero.getBossesDefeated() < this.hero.getLevel() / 15) {
-				this.setEnabled();
-			}
-		}
+//		}
 		
 	}
 	

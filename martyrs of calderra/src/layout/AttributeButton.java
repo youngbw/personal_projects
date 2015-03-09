@@ -23,17 +23,17 @@ public class AttributeButton extends JButton implements ActionListener, Observer
 	
 	private boolean increment;
 	private String attribute;
-	private AbstractHero hero;
+	private CalderraGUI controller;
 	
-	public AttributeButton(AbstractHero hero, String attribute, boolean isIncrement) {
-		this.hero = hero;
+	public AttributeButton(CalderraGUI controller, String attribute, boolean isIncrement) {
+		this.controller = controller;
 		this.attribute = attribute;
 		this.increment = isIncrement;
 		AttributeButton.pointsAdded = false;
 		AttributeButton.points = 0;
 		AttributeButton.addedPoints = 0;
-		maxDecrementValue = this.hero.getAttributes().get(attribute);
-		this.hero.addObserver(this);
+		maxDecrementValue = this.controller.getHero().getAttributes().get(attribute);
+		this.controller.getHero().addObserver(this);
 		this.addActionListener(this);
 	}
 
@@ -41,34 +41,34 @@ public class AttributeButton extends JButton implements ActionListener, Observer
 	public void actionPerformed(final ActionEvent e) {
 		
 		if (increment) {
-			if (AttributeButton.points > 0 && (this.hero.getAttributes().get(attribute) < 100) || attribute.equals("maxHealth")) {
-				this.hero.getAttributes().put(attribute, this.hero.getAttributes().get(attribute) + 1);
+			if (AttributeButton.points > 0 && (this.controller.getHero().getAttributes().get(attribute) < 100) || attribute.equals("maxHealth")) {
+				this.controller.getHero().getAttributes().put(attribute, this.controller.getHero().getAttributes().get(attribute) + 1);
 				AttributeButton.addedPoints++;
 				AttributeButton.points--;
 				AttributeButton.pointsAdded = false;
-				this.hero.getAttributes().put("points", this.hero.getAttributes().get("points") - 1);
+				this.controller.getHero().getAttributes().put("points", this.controller.getHero().getAttributes().get("points") - 1);
 			}
 		} else {
-			if (this.hero.getAttributes().get(attribute) > maxDecrementValue && AttributeButton.addedPoints > 0) {
-				this.hero.getAttributes().put(attribute, this.hero.getAttributes().get(attribute) - 1);
+			if (this.controller.getHero().getAttributes().get(attribute) > maxDecrementValue && AttributeButton.addedPoints > 0) {
+				this.controller.getHero().getAttributes().put(attribute, this.controller.getHero().getAttributes().get(attribute) - 1);
 				AttributeButton.points++;
 				AttributeButton.addedPoints--;
-				this.hero.getAttributes().put("points", this.hero.getAttributes().get("points") + 1);
+				this.controller.getHero().getAttributes().put("points", this.controller.getHero().getAttributes().get("points") + 1);
 			}
 		}
-		this.hero.changed("stats");
+		this.controller.getHero().changed("stats");
 	}
 
 	
-	public void setHero(AbstractHero theHero) {
-		this.hero = theHero;
-//		this.hero.addObserver(this);
-		pointsAdded = false;
-		points = 0;
-		maxDecrementValue = this.hero.getAttributes().get(attribute);
-		update(this.hero, this.hero.getAttributes().get("points"));
-		
-	}
+//	public void setHero(AbstractHero theHero) {
+//		this.controller.getHero() = theHero;
+////		this.controller.getHero().addObserver(this);
+//		pointsAdded = false;
+//		points = 0;
+//		maxDecrementValue = this.controller.getHero().getAttributes().get(attribute);
+//		update(this.controller.getHero(), this.controller.getHero().getAttributes().get("points"));
+//		
+//	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
@@ -80,10 +80,10 @@ public class AttributeButton extends JButton implements ActionListener, Observer
 			}
 			if (increment) {
 				this.setEnabled(true);
-				maxDecrementValue = this.hero.getAttributes().get(attribute);
+				maxDecrementValue = this.controller.getHero().getAttributes().get(attribute);
 				
 			} else {
-				maxDecrementValue = this.hero.getAttributes().get(attribute);
+				maxDecrementValue = this.controller.getHero().getAttributes().get(attribute);
 			}
 		}
 		if (AttributeButton.points == 0) {

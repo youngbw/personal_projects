@@ -1,29 +1,18 @@
 package model;
 
-import interfaces.AttackCard;
-import interfaces.Magical;
-import interfaces.Physical;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
-import javax.swing.JDialog;
 
 import layout.CalderraGUI;
-import layout.MyPanel;
 import layout.MyPopupMenu;
 
 
 @SuppressWarnings("serial")
-public class AbstractCard extends JPanel implements MouseListener, Observer, java.io.Serializable {
+public class AbstractCard extends JPanel implements MouseListener, java.io.Serializable {
 
 	
 	public static final int DELAY = 300;
@@ -31,23 +20,22 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 	public static final int INCREMENT = 1;
 	public static final int DECREMENT = -1;
 	
-	public static String[] gif1;
-	public static String[] gif2;
+	protected ArrayList<String> attackGif;
 	
 
-	JDialog dia;
-	MyPanel panel;
-	AbstractCard card;
-	Timer myTimer;
-	int k;
-//	static int numRunning;
-	boolean heroAttackUsed;
-	boolean enemyAttackUsed;
+//	JDialog dia;
+//	MyPanel panel;
+//	AbstractCard card;
+//	Timer myTimer;
+//	int k;
+////	static int numRunning;
+//	boolean heroAttackUsed;
+//	boolean enemyAttackUsed;
 	
 	
 	private static int classId = 0;
 	private int id;
-	public AbstractHero hero;
+	protected CalderraGUI controller;
 	private String name;
 	private String src;
 	protected int cost;
@@ -69,17 +57,19 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 //	private boolean drawEquip;
 	public boolean mouseOn;
 	
-	public AbstractCard() {
-		this(null, "", "");
+	public AbstractCard(CalderraGUI controller) {
+		this("", "", controller);
 		
 	}
 	
-	public AbstractCard(AbstractHero hero, String src, String name) {
+	public AbstractCard(String src, String name, CalderraGUI controller) {
 //		super(src);
 		this.src = src;
 		this.name = name;
 		
-		this.hero = hero;
+		this.controller = controller;
+		
+//		this.controller.getHero().addObserver(this);
 		
 		this.inShop = false;
 		this.isInBag = false;
@@ -89,34 +79,35 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 		this.mouseOn = false;
 		healType = Heal.HEAL_TYPE_NONE;
 		periodicIncrease = 0;
+		attackGif = new ArrayList<String>();
 		
 		
 		//FOR FIGHT GIF
-		dia = new JDialog();
-		dia.setAlwaysOnTop(true);
-		dia.setSize(CalderraGUI.SCREEN_WIDTH / 2, CalderraGUI.SCREEN_HEIGHT / 2);
-		dia.setLayout(new BorderLayout());
-		dia.setLocationRelativeTo(this);
-		dia.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		panel = new MyPanel();
-//		this.hero.addObserver(panel);
-		dia.add(panel);
-		myTimer = new Timer(0, new MyTimerListener());
-		myTimer.setDelay(DELAY);
-		myTimer.setRepeats(true);
-		k = 0;
+//		dia = new JDialog();
+//		dia.setAlwaysOnTop(true);
+//		dia.setSize(CalderraGUI.SCREEN_WIDTH / 2, CalderraGUI.SCREEN_HEIGHT / 2);
+//		dia.setLayout(new BorderLayout());
+//		dia.setLocationRelativeTo(this);
+//		dia.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		panel = new MyPanel();
+////		this.hero.addObserver(panel);
+//		dia.add(panel);
+//		myTimer = new Timer(0, new MyTimerListener());
+//		myTimer.setDelay(DELAY);
+//		myTimer.setRepeats(true);
+//		k = 0;
 		//END FIGHT GIF
 		
 		this.id = classId++;
 		classId++;
 		quantity = 0;
-		pop = new MyPopupMenu(this.hero, this);
-		this.hero.addObserver(this);
+		pop = new MyPopupMenu(this.controller, this);
+//		this.controller.getHero().addObserver(this);
 		this.addMouseListener(this);
 	}
 	
 	public AbstractCard(AbstractCard card) {
-		this(card.hero, card.src, card.getName());
+		this(card.src, card.getName(), card.controller);
 		this.cost = card.cost;
 	}
 	
@@ -182,6 +173,10 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 		this.isInBag = true;
 	}
 	
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+	
 	
 	public String getSrc() {
 		return this.src;
@@ -192,30 +187,30 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 		repaint();
 	}
 	
-	private void step() {
-		if (k == 0) {
-			dia.setVisible(true);
-//			dia.setLocation(0, SCREEN_HEIGHT / 2);
-		} else if (k == getGifSrc().length) {
-			k = 0;
-			dia.dispose();
-//			panel.damage = 0;
-			panel.paintDamage = false;
-			myTimer.stop();
-			this.hero.changed("Attack Completed");
-//			numRunning--;
-//			if (numRunning == 0) this.hero.changed("Battle Show");
-			return;
-		} else if (k == getGifSrc().length - 1) {
-			panel.paintDamage = true;
-//			panel.damage = trueDamage;
-		}
-		panel.src = getGifSrc()[k];
-		panel.repaint();
-//		dia.setVisible(true);
-		k++;
-//		if (k == getGifSrc().length) panel.paintDamage = false;
-	}
+//	private void step() {
+//		if (k == 0) {
+//			dia.setVisible(true);
+////			dia.setLocation(0, SCREEN_HEIGHT / 2);
+//		} else if (k == getGifSrc().length) {
+//			k = 0;
+//			dia.dispose();
+////			panel.damage = 0;
+//			panel.paintDamage = false;
+//			myTimer.stop();
+//			this.controller.getHero().changed("Attack Completed");
+////			numRunning--;
+////			if (numRunning == 0) this.hero.changed("Battle Show");
+//			return;
+//		} else if (k == getGifSrc().length - 1) {
+//			panel.paintDamage = true;
+////			panel.damage = trueDamage;
+//		}
+//		panel.src = getGifSrc()[k];
+//		panel.repaint();
+////		dia.setVisible(true);
+//		k++;
+////		if (k == getGifSrc().length) panel.paintDamage = false;
+//	}
 	
 //	private void playGifs() {
 //		//combine and leave room for extra shots of 'incoming panels'
@@ -250,30 +245,32 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 //		if (panel.paintDamage) panel.paintDamage = false;
 //	}
 	
-	public void progressAttack() {
-		if (this.hero.getCurrentMagicPower() >= ((AttackCard)this).getCruxCost() && !this.isInBag) {
-			Random rand = new Random();
-			
-			if ((this instanceof Physical || this instanceof Magical) && this.hero.enemy != null) {
-				int damage = this.hero.getHit(this);
-				int trueDamage = this.hero.enemy.takeHit(damage);
-				MyPanel.damage.offer(trueDamage);
-				
-			} else if (this instanceof Heal) {
-				//ACTUAL HEAL TAKES PLACE IN HEAL METHOD OF HERO
-				int heal = this.hero.heal(this, this.getHealType());
-			}
-			myTimer.start();
-//			this.hero.cardGif(this);
-		}
-	}
+//	public int progressAttack() {
+//		if (this.controller.getHero().getCurrentMagicPower() >= ((AttackCard)this).getCruxCost() && !this.isInBag) {
+////			Random rand = new Random();
+//			
+//			if ((this instanceof Physical || this instanceof Magical) && this.controller.getHero().enemy != null) {
+//				int damage = this.controller.getHero().getHit(this);
+////				int trueDamage = this.controller.getHero().enemy.takeHit(damage);
+//				return damage;
+////				MyPanel.damage.offer(trueDamage);
+//				
+//			} else if (this instanceof Heal) {
+//				//ACTUAL HEAL TAKES PLACE IN HEAL METHOD OF HERO
+//				int heal = this.controller.getHero().heal(this, this.getHealType());
+//				return heal;
+//			}
+////			myTimer.start();
+////			this.hero.cardGif(this);
+//			
+//		}
+//		return -1;
+//	}
 	
-	public void use() {
-		this.hero.changed(this);
-	}
+	public void consume() {}
 	
-	public void consume() {
-//		((Consumable)this).decrementQuantity();
+	public ArrayList<String> getattackGif() {
+		return this.attackGif;
 	}
 	
 	public String getHealType() {
@@ -318,43 +315,45 @@ public class AbstractCard extends JPanel implements MouseListener, Observer, jav
 	}
 	
 	
-	@SuppressWarnings("unused")
-	private class MyTimerListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-//			panel.damage = trueDamage;
-			step();
-//			playGifs();
-		}
-	}
+//	@SuppressWarnings("unused")
+//	private class MyTimerListener implements ActionListener {
+//
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+////			panel.damage = trueDamage;
+//			step();
+////			playGifs();
+//		}
+//	}
 	
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-			this.hero.addObserver(this);
-//			this.hero.addObserver(panel);
-			if (this.hero.getIsInBattle()) this.isInBattle = true; else this.isInBattle = false;
-		} else if (arg instanceof AbstractCard) {
-			if (((AbstractCard)arg).equals(this)) {
-				myTimer.setInitialDelay(0);
-//				k = 0;
-//				if (numRunning > 0) {
-//					myTimer.setInitialDelay(2000);
-//				}
-//				numRunning++;
-//				myTimer.start();
-			}
-				
-			
-		} else if (arg instanceof String) {
-			if (((String)arg).equals("fireGifs")) {
-				
-				myTimer.start();
-			}
-		}
-		
-	}
+//	@Override
+//	public void update(Observable o, Object arg) {
+////		if (arg instanceof AbstractHero) {
+////			this.hero = (AbstractHero) arg;
+////			this.hero.addObserver(this);
+//////			this.hero.addObserver(panel);
+//		if (this.controller.getHero().getIsInBattle()) this.isInBattle = true; else this.isInBattle = false;
+////		} 
+////		if (arg instanceof AbstractCard) {
+////			if (((AbstractCard)arg).equals(this)) {
+////				myTimer.setInitialDelay(0);
+//////				k = 0;
+//////				if (numRunning > 0) {
+//////					myTimer.setInitialDelay(2000);
+//////				}
+//////				numRunning++;
+//////				myTimer.start();
+////			}
+////				
+////			
+////		} 
+////		else if (arg instanceof String) {
+////			if (((String)arg).equals("fireGifs")) {
+////				
+////				myTimer.start();
+////			}
+////		}
+//		
+//	}
 	
 }

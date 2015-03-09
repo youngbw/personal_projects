@@ -11,6 +11,7 @@ import java.util.Observer;
 
 import javax.swing.JDialog;
 
+import layout.CalderraGUI;
 import layout.MyPanel;
 import model.AbstractCard;
 import model.AbstractHero;
@@ -30,13 +31,14 @@ public class InventoryGUI extends JDialog {
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 	
-	
+	private CalderraGUI controller;
 	private ArrayList<AbstractCard> bag;
 //	private ArrayList<MyPanel> fillerPanels;
 	private ArrayList<InventoryPanel> inventoryPanels;
 	
-	public InventoryGUI() {
+	public InventoryGUI(CalderraGUI controller) {
 		bag = new ArrayList<AbstractCard>();
+		this.controller = controller;
 //		fillerPanels = new ArrayList<MyPanel>();
 		inventoryPanels = new ArrayList<InventoryPanel>();
 		this.setAlwaysOnTop(true);
@@ -46,7 +48,7 @@ public class InventoryGUI extends JDialog {
 	
 	private void fillPanels() {
 		for (int i = 0; i < MAX_BAG_SIZE; i++) {
-			InventoryPanel panel = new InventoryPanel();
+			InventoryPanel panel = new InventoryPanel(controller);
 			inventoryPanels.add(panel);
 		}
 	}
@@ -66,7 +68,7 @@ public class InventoryGUI extends JDialog {
 						|| (panel.getCard().getName().equals(card.getName()) && ((Consumable)panel.getCard()).getQuantity() < ((Consumable)panel.getCard()).MAX_AMOUNT))) {
 							((Consumable)panel.getCard()).incrementQuantity();
 							panel.repaint();
-							System.out.println(((Consumable)panel.getCard()).getName() + " quantity = " + ((Consumable)panel.getCard()).getQuantity() + "of ID: " + ((Consumable)panel.getCard()).localID);
+							System.out.println(((Consumable)panel.getCard()).getName() + " quantity = " + ((Consumable)panel.getCard()).getQuantity() + " of ID: " + ((Consumable)panel.getCard()).localID);
 							return true;
 				}
 			}
@@ -88,7 +90,7 @@ public class InventoryGUI extends JDialog {
 		if (!isEmpty()) {
 			for (AbstractCard c: bag) {
 				if (c.equals(target)) {
-					target.hero.getAttributes().put("numInBag", target.hero.getAttributes().get("numInBag") - 1); //update bag size
+					this.controller.getHero().getAttributes().put("numInBag", this.controller.getHero().getAttributes().get("numInBag") - 1); //update bag size
 					bag.remove(c);
 					
 					for (int i = 0; i < MAX_BAG_SIZE; i++) {

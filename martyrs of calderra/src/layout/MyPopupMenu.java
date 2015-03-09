@@ -14,19 +14,20 @@ import model.Consumable;
 
 public class MyPopupMenu extends JPopupMenu {
 
-	AbstractHero hero;
-	AbstractCard card;
+	CalderraGUI controller;
+	private AbstractCard card;
 	
-	public MyPopupMenu(AbstractHero hero, AbstractCard card) {
-		this.hero = hero;
+	public MyPopupMenu(CalderraGUI controller, AbstractCard card) {
+		this.controller = controller;
 		this.card = card;
+//		System.out.println(this.controller + " " + this.card);
 		setup();
 		
 	}
 	
 	
 	private void setup() {
-		if (!(this.hero instanceof AbstractVillain) && !this.hero.getIsInBattle()) {
+		if (!(this.controller.getHero() instanceof AbstractVillain) && !this.controller.getHero().getIsInBattle()) {
 			if (card.isInBag && !(this.card instanceof Consumable)) {
 				JMenuItem equip = new JMenuItem("Equip");
 				equip.setMnemonic('E');
@@ -34,7 +35,7 @@ public class MyPopupMenu extends JPopupMenu {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-					hero.equipCard(card);
+						controller.getHero().equipCard(card);
 					setVisible(false);
 					
 					}
@@ -48,7 +49,7 @@ public class MyPopupMenu extends JPopupMenu {
 				unequip.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						hero.unequipCard(card);
+						controller.getHero().unequipCard(card);
 						setVisible(false);
 					}
 				});
@@ -62,7 +63,7 @@ public class MyPopupMenu extends JPopupMenu {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setVisible(false);
-					hero.deleteCard(card);
+					controller.getHero().deleteCard(card);
 				}
 			});
 			this.add(delete);

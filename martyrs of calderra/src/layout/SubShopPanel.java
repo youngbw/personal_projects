@@ -21,15 +21,15 @@ import model.AbstractCard;
 import model.Consumable;
 
 @SuppressWarnings("serial")
-public class SubShopPanel extends MyPanel implements MouseListener, Observer {
+public class SubShopPanel extends MyPanel implements MouseListener {
 
-	AbstractHero hero;
-	AbstractCard card;
-	InfoDisplayPanel infoPanel;
+	private CalderraGUI controller;
+	private AbstractCard card;
+	private InfoDisplayPanel infoPanel;
 	
-	public SubShopPanel(AbstractHero hero, AbstractCard card) {
+	public SubShopPanel(CalderraGUI controller, AbstractCard card) {
 		this.card = card;
-		this.hero = hero;
+		this.controller = controller;
 		infoPanel = new InfoDisplayPanel(this.card);
 		setup();
 	}
@@ -60,9 +60,9 @@ public class SubShopPanel extends MyPanel implements MouseListener, Observer {
 	public void mouseClicked(MouseEvent e) {
 		try {	
 				Class<?> another = Class.forName(card.getClass().getName());
-				Constructor<?> con = another.getConstructor(AbstractHero.class);
-				Object real = con.newInstance(hero);
-				hero.buyCard((AbstractCard) real);
+				Constructor<?> con = another.getConstructor(CalderraGUI.class);
+				Object real = con.newInstance(this.controller);
+				this.controller.getHero().buyCard((AbstractCard) real);
 			
 			
 		} catch (Exception e1) {
@@ -70,13 +70,13 @@ public class SubShopPanel extends MyPanel implements MouseListener, Observer {
 		}
 	}
 
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-		}
-		
-	}
+	
+//	public void update(Observable o, Object arg) {
+////		if (arg instanceof AbstractHero) {
+////			this.hero = (AbstractHero) arg;
+////		}
+//		
+//	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {

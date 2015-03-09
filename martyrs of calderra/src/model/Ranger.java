@@ -1,5 +1,7 @@
 package model;
 
+import layout.CalderraGUI;
+
 public class Ranger extends AbstractHero {
 	
 	private static final String SOURCE = "./src/resources/Ranger.jpg";
@@ -7,12 +9,12 @@ public class Ranger extends AbstractHero {
 	private static final String[] INITIAL_ATTS = {"accuracy", "speed", "speed", "strength"};
 	
 	
-	public Ranger() {
-		this("Silith");
+	public Ranger(CalderraGUI controller) {
+		this("Silith", controller);
 	}
 	
-	public Ranger(String name) {
-		super(name, SOURCE, CLASS, INITIAL_ATTS);
+	public Ranger(String name, CalderraGUI controller) {
+		super(name, SOURCE, CLASS, INITIAL_ATTS, controller);
 	}
 
 	

@@ -86,7 +86,7 @@ public class MyWindowListener implements WindowListener, ActionListener {
 	@Override
 	public void windowClosed(WindowEvent e) {
 		this.hero.exitBattle();
-		this.hero.changed("Battle Show");
+//		this.hero.changed("Battle Show");
 //		this.hero.changed();
 		
 	}

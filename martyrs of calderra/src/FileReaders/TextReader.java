@@ -1,5 +1,6 @@
 package FileReaders;
 
+import layout.CalderraGUI;
 import model.AbstractHero;
 import model.AbstractCard;
 import model.AbstractVillain;
@@ -18,7 +19,7 @@ public class TextReader {
 		super();
 	}
 	
-	public ArrayList<ArrayList<AbstractCard>> readShop(String fileName, AbstractHero hero) {
+	public ArrayList<ArrayList<AbstractCard>> readShop(String fileName, CalderraGUI controller) {
 		try {
 			Scanner fileScan = new Scanner(new File(fileName));
 			ArrayList<ArrayList<AbstractCard>> myLists = new ArrayList<ArrayList<AbstractCard>>();
@@ -34,11 +35,10 @@ public class TextReader {
 					while (lineScan.hasNext()) {
 						String cardName = lineScan.next();						
 						Class<?> card = Class.forName("model." + cardName);
-						Constructor<?> con = card.getConstructor(AbstractHero.class);
-						Object real = con.newInstance(hero);
+						Constructor<?> con = card.getConstructor(CalderraGUI.class);
+						Object real = con.newInstance(controller);
 						
 						cardList.add((AbstractCard) real);
-						
 					}
 					lineScan.close();
 				} else {
@@ -72,7 +72,7 @@ public class TextReader {
 	}
 	
 	
-	public ArrayList<AbstractCard> readAttacks(AbstractVillain him) {
+	public ArrayList<AbstractCard> readAttacks(CalderraGUI controller) {
 		
 		try {
 			Scanner fileScan = new Scanner(new File("src/resources/attacks.txt"));
@@ -83,8 +83,8 @@ public class TextReader {
 				while (lineScan.hasNext()) {
 					String cardName = lineScan.next();						
 					Class<?> card = Class.forName("model." + cardName);
-					Constructor<?> con = card.getConstructor(AbstractHero.class);
-					Object real = con.newInstance(him);
+					Constructor<?> con = card.getConstructor(CalderraGUI.class);
+					Object real = con.newInstance(controller);
 //					him.addObserver((AbstractCard)real);
 					cardList.add((AbstractCard) real);
 				}

@@ -1,5 +1,7 @@
 package model;
 
+import layout.CalderraGUI;
+
 public class Druid extends AbstractHero {
 
 	private static final String SOURCE = "./src/resources/Druid.jpg";
@@ -7,12 +9,12 @@ public class Druid extends AbstractHero {
 	private static final String[] INITIAL_ATTS = {"strength", "maxMagicPower", "currentMagicPower", "accuracy", "speed"};
 	
 	
-	public Druid() {
-		this("Silith");
+	public Druid(CalderraGUI controller) {
+		this("Silith", controller);
 	}
 	
-	public Druid(String name) {
-		super(name, SOURCE, CLASS, INITIAL_ATTS);
+	public Druid(String name, CalderraGUI controller) {
+		super(name, SOURCE, CLASS, INITIAL_ATTS, controller);
 	}
 	
 }

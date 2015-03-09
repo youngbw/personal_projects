@@ -1,5 +1,6 @@
 package model;
 
+import layout.CalderraGUI;
 import interfaces.Stacker;
 
 public class HealthPotion extends Consumable implements Stacker {
@@ -10,8 +11,8 @@ public class HealthPotion extends Consumable implements Stacker {
 	private static final String SRC = "/src/resources/HealthPotion.jpg";
 	private static final int COST = 10;
 	
-	public HealthPotion(AbstractHero hero) {
-		super(hero, SRC, "Health Potion");
+	public HealthPotion(CalderraGUI controller) {
+		super(SRC, "Health Potion", controller);
 		this.localID = ID;
 		this.cost = COST;
 	}
@@ -24,13 +25,14 @@ public class HealthPotion extends Consumable implements Stacker {
 	
 	@Override
 	public void consume() {
-		int amount = this.hero.consume(this, CONSUME_TYPE_POTION, 20);
-		this.hero.getAttributes().put("currentHealth", this.hero.getAttributes().get("currentHealth") + amount >
-				this.hero.getmaxHealth() ? this.hero.getmaxHealth() : this.hero.getcurrentHealth() + amount);
+		super.consume();
+		int amount = this.controller.getHero().consume(this, CONSUME_TYPE_POTION, 20);
+		this.controller.getHero().getAttributes().put("currentHealth", this.controller.getHero().getAttributes().get("currentHealth") + amount >
+		this.controller.getHero().getmaxHealth() ? this.controller.getHero().getmaxHealth() : this.controller.getHero().getcurrentHealth() + amount);
 		
-		System.out.println("Current Health: " + this.hero.getcurrentHealth());
+		System.out.println("Current Health: " + this.controller.getHero().getcurrentHealth());
 		System.out.println("Quantity: " + this.getQuantity());
-		this.hero.changed("stats");
+		this.controller.getHero().changed("stats");
 	}
 	
 	

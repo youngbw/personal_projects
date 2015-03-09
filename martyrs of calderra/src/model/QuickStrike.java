@@ -1,25 +1,21 @@
 package model;
 
+import java.util.ArrayList;
+
+import layout.CalderraGUI;
 import interfaces.Physical;
 
 @SuppressWarnings("serial")
 public class QuickStrike extends AbstractCard implements Physical {
 
-	private static final String[] ATTACK_GIF = {"src/resources/mage.jpg", "", ""};
+	private static final String[] ATTACK_GIF = {"src/resources/Mage.jpeg", "src/resources/Mage.jpg", "/src/resources/Mage.jpg", "src/resources/Mage.jpg"};
 	private static final int CRUX_COST = 5;
 	
-	public QuickStrike(AbstractHero hero) {
-		super(hero, "src/resources/Rage.jpg", "Quick Strike");
+	public QuickStrike(CalderraGUI controller) {
+		super("src/resources/Rage.jpg", "Quick Strike", controller);
 		this.cost = 100;
 	}
 	
-	
-	@Override
-	public void use() {
-		this.hero.setAdditionalStatPercent("speed", .5, INCREMENT);
-		super.use();
-		this.hero.setAdditionalStatPercent("speed", .5, DECREMENT);
-	}
 	
 	@Override
 	public String[] getGifSrc() {
@@ -31,10 +27,32 @@ public class QuickStrike extends AbstractCard implements Physical {
 		return CRUX_COST;
 	}
 	
+
+	@Override
+	public void getUpgrade() {
+		this.controller.getHero().setAdditionalStatPercent("speed", .5, INCREMENT);
+		
+	}
+
+	@Override
+	public void getDowngrade() {
+		this.controller.getHero().setAdditionalStatPercent("speed", .5, DECREMENT);
+		
+	}
+	
 	public String toString() {
 		return "A swift attack that amplifies the users speed to unbeforeseen levels";
 	}
-	
-	
+
+
+	@Override
+	public ArrayList<String> getAttackGif() {
+		attackGif = new ArrayList<String>();
+		for (String s: ATTACK_GIF) {
+			attackGif.add(s);
+		}
+		return attackGif;
+	}
+
 	
 }

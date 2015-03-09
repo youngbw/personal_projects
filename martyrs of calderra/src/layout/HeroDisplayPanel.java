@@ -21,8 +21,9 @@ import javax.swing.border.LineBorder;
 
 import model.AbstractHero;
 
+//Has controller reference and removed observer pattern, must call update manually.
 @SuppressWarnings("serial")
-public class HeroDisplayPanel extends JPanel implements MouseListener, Observer {
+public class HeroDisplayPanel extends MyPanel implements MouseListener {
 
 	private static final int FIELD_HEIGHT = 25;
 	
@@ -32,50 +33,54 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 	
 	
-	InfoDisplayPanel infoPanel;
+	public InfoDisplayPanel infoPanel;
 	
-	private AbstractHero hero;
+	private CalderraGUI controller;
+	private AbstractHero theHeroViewed;
 	private JProgressBar healthBar;
 	private JProgressBar magicBar;
 	private MyPanel heroPanel;
 	
 	private JTextField nameDisplay;
+	private String source;
 	
-	public HeroDisplayPanel(AbstractHero hero) {
-		this.hero = hero;
+	public HeroDisplayPanel(CalderraGUI controller, AbstractHero theHero) {
+		this.controller = controller;
 		this.setBackground(new Color(0, 0, 0, 0));
 		
+		this.theHeroViewed =  theHero;
 		
 		
-		healthBar = new JProgressBar(0, hero.getAttributes().get("maxHealth"));
+		healthBar = new JProgressBar(0, this.theHeroViewed.getAttributes().get("maxHealth"));
 		healthBar.setOpaque(true);
-		healthBar.setString("HP: " + (hero.getAttributes().get("currentHealth") + "/" + healthBar.getMaximum()));
+		healthBar.setString("HP: " + (this.theHeroViewed.getAttributes().get("currentHealth") + "/" + healthBar.getMaximum()));
 		healthBar.setStringPainted(true);
-		healthBar.setValue(hero.getAttributes().get("currentHealth"));
+		healthBar.setValue(this.theHeroViewed.getAttributes().get("currentHealth"));
 		healthBar.setBackground(new Color(255, 0, 0));
 		
 		
-		magicBar = new JProgressBar(0, hero.getAttributes().get("maxMagicPower"));
+		magicBar = new JProgressBar(0, this.theHeroViewed.getAttributes().get("maxMagicPower"));
 		magicBar.setOpaque(true);
-		magicBar.setString("MP: " + (this.hero.getAttributes().get("currentMagicPower") + "/" + magicBar.getMaximum()));
+		magicBar.setString("MP: " + (this.theHeroViewed.getAttributes().get("currentMagicPower") + "/" + magicBar.getMaximum()));
 		magicBar.setStringPainted(true);
-		magicBar.setValue(hero.getAttributes().get("currentMagicPower"));
+		magicBar.setValue(this.theHeroViewed.getAttributes().get("currentMagicPower"));
 		magicBar.setBackground(new Color(0, 255, 255));
 		
 		healthBar.setFocusable(false);
 		magicBar.setFocusable(false);
+		source = this.theHeroViewed.getImageSource();
 		setup();
 		this.addMouseListener(this);
-//		hero.addObserver(this);
+//		this.theHeroViewed.addObserver(this);
 	}
 	
 	private void setup() {
 		this.setLayout(new BorderLayout());
 		this.setBorder(new LineBorder(Color.BLACK));
-		heroPanel = new MyPanel(hero.getImageSource());
-		heroPanel.setLayout(new BorderLayout());
-		heroPanel.setBackground(MyPanel.TRANSPARENT);
-		infoPanel = new InfoDisplayPanel(this.hero);
+		this.heroPanel = new MyPanel(this.theHeroViewed.getImageSource());
+		this.heroPanel.setLayout(new BorderLayout());
+		this.heroPanel.setBackground(MyPanel.TRANSPARENT);
+		infoPanel = new InfoDisplayPanel(this.theHeroViewed);
 		JPanel progressPanel = new JPanel();
 		progressPanel.setBackground(MyPanel.TRANSPARENT);
 		progressPanel.setPreferredSize(new Dimension(SCREEN_WIDTH / 7, SCREEN_HEIGHT / 20));
@@ -87,7 +92,7 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
 		progressPanel.add(magicBar);
 		
 		//Name Display
-		nameDisplay = new JTextField(this.hero.getFullName());
+		nameDisplay = new JTextField(this.theHeroViewed.getFullName());
 		nameDisplay.setBackground(new Color(20, 20, 20, 100));
 		nameDisplay.setForeground(Color.CYAN);
 		nameDisplay.setHorizontalAlignment((int) JTextField.CENTER_ALIGNMENT);
@@ -95,11 +100,11 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
 		this.add(nameDisplay, BorderLayout.NORTH);
 		nameDisplay.setSize(nameDisplay.getParent().getWidth(), FIELD_HEIGHT);
 		
-		heroPanel.add(progressPanel, BorderLayout.SOUTH);
-//		heroPanel.add(magicBar, BorderLayout.SOUTH);
+		this.heroPanel.add(progressPanel, BorderLayout.SOUTH);
+//		this.theHeroViewedPanel.add(magicBar, BorderLayout.SOUTH);
 		
 //		add(progressPanel, BorderLayout.SOUTH);
-		add(heroPanel, BorderLayout.CENTER);
+		add(this.heroPanel, BorderLayout.CENTER);
 	}
 	
 	
@@ -110,24 +115,23 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
     public void paintComponent(final Graphics theGraphics) {
         super.paintComponent(theGraphics);
 		final Graphics2D g2D = (Graphics2D) theGraphics;
-        g2D.drawImage(new ImageIcon(hero.getImageSource()).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+//        g2D.drawImage(new ImageIcon(this.source).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 	
-	public void addObserver() {
-		hero.addObserver(this);
+	public void setSource(String src) {
+//		this.source = src;
+		heroPanel.setSource(src);
+//		repaint();
 	}
 	
-	public AbstractHero getHero() {
-		return hero;
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		//for debugging
-		this.hero.addPoints(10);
-		this.hero.getAttributes().put("gold", this.hero.getAttributes().get("gold") + 100);
-		infoPanel.dispose();;
-		this.hero.changed();
+//		this.controller.getHero().addPoints(10);
+//		this.controller.getHero().getAttributes().put("gold", this.theHeroViewed.getAttributes().get("gold") + 100);
+//		infoPanel.dispose();;
+//		this.theHeroViewed.changed();
 	}
 
 	@Override
@@ -139,7 +143,7 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		if (infoPanel != null && !infoPanel.isVisible()) {
-			infoPanel = new InfoDisplayPanel(this.hero);
+			infoPanel = new InfoDisplayPanel(this.theHeroViewed);
 			infoPanel.setLocation(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
 					this.getLocationOnScreen().y - infoPanel.getHeight() > 0 ? this.getLocationOnScreen().y - infoPanel.getHeight() : this.getLocationOnScreen().y + this.getHeight());
 			infoPanel.setVisible(true);
@@ -152,27 +156,26 @@ public class HeroDisplayPanel extends JPanel implements MouseListener, Observer 
 		
 	}
 	
-	public void setHero(AbstractHero hero) {
-		this.hero = hero;
-	}
+//	public void setHero(AbstractHero hero) {
+//		this.theHeroViewed = this.theHeroViewed;
+//	}
 
 
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-			heroPanel.setHero(this.hero);
-			infoPanel = new InfoDisplayPanel(this.hero);
-			nameDisplay.setText(this.hero.getFullName());
-			this.hero.addObserver(this);
-			repaint();
-		}
+	public void update(AbstractHero theHero) {
+//		if (arg instanceof Abstractthis.theHeroViewed) {
+//			this.theHeroViewed = (Abstractthis.theHeroViewed) arg;
+//			this.theHeroViewedPanel.setthis.theHeroViewed(this.theHeroViewed);
+//			infoPanel = new InfoDisplayPanel(this.theHeroViewed);
+//			nameDisplay.setText(this.theHeroViewed.getFullName());
+//			this.theHeroViewed.addObserver(this);
+//			repaint();
+//		}
 		
-		healthBar.setMaximum((int) (this.hero.getAttributes().get("maxHealth") + this.hero.getAdditionalStats().get("maxHealth")));
-		healthBar.setValue(this.hero.getAttributes().get("currentHealth"));
+		healthBar.setMaximum((int) (theHero.getAttributes().get("maxHealth") + theHero.getAdditionalStats().get("maxHealth")));
+		healthBar.setValue(theHero.getAttributes().get("currentHealth"));
 		healthBar.setString("HP: " + healthBar.getValue() + "/" + healthBar.getMaximum());
-		magicBar.setMaximum(this.hero.getAttributes().get("maxMagicPower"));
-		magicBar.setValue(this.hero.getAttributes().get("currentMagicPower"));
+		magicBar.setMaximum(theHero.getAttributes().get("maxMagicPower"));
+		magicBar.setValue(theHero.getAttributes().get("currentMagicPower"));
 		magicBar.setString("MP: " + magicBar.getValue() + "/" + magicBar.getMaximum());
 		repaint();
 	}

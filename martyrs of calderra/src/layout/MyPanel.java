@@ -35,7 +35,7 @@ public class MyPanel extends JPanel implements Observer {
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 	
-	protected AbstractHero hero;
+//	protected AbstractHero hero;
 	public String src;
 	boolean enabled;
 	public boolean paintDamage;
@@ -63,11 +63,10 @@ public class MyPanel extends JPanel implements Observer {
     public void paintComponent(final Graphics theGraphics) {
         super.paintComponent(theGraphics);
 		final Graphics2D g2D = (Graphics2D) theGraphics;
-        g2D.drawImage(new ImageIcon(src).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+        g2D.drawImage(new ImageIcon(this.src).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
         
         if (this instanceof UserInteractive) {
         	g2D.setColor(new Color(50, 50, 50, 100));
-//        	g2D.fillRect(0, this.getHeight() - 20, this.getWidth(), this.getHeight() - (this.getHeight() - 20));;
         	
         	if (!this.enabled) g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
         	
@@ -76,33 +75,28 @@ public class MyPanel extends JPanel implements Observer {
         	g2D.drawString(this.toString(), this.getWidth() / 10, this.getHeight() - 2);
         }
         
-        if (paintDamage) {
-        	Font font = new Font("Times Roman", Font.BOLD, 60);
-        	g2D.setFont(font);
-        	g2D.setColor(Color.BLACK);
-        	if (!MyPanel.damage.isEmpty()) {
-        		if (missMarker.poll() == false) {
-            		MyPanel.damage.poll();
-            		g2D.drawString("MISS", this.getWidth() - this.getWidth() / 4, this.getHeight() / 5);
-            		g2D.setColor(Color.YELLOW);
-            		g2D.drawString("MISS", this.getWidth() - this.getWidth() / 4 - 5, this.getHeight() / 5 + 2);
-            		System.out.println(damage.size() + " damage size after poll)");
-            	} else {
-            		System.out.println(damage.size() + " damage size in else statement)");
-            		int theDamage = damage.poll();
-    				g2D.drawString("" +theDamage, this.getWidth() - this.getWidth() / 4, this.getHeight() / 5);
-    				g2D.setColor(Color.YELLOW);
-    				g2D.drawString("" + theDamage, this.getWidth() - this.getWidth() / 4 - 5, this.getHeight() / 5 + 2);
-            	}
-        	}
-        	
-        	//TO MAKE SURE BOTH ARE EMPTY AFTER ONE ROUND
-//        	while (!damage.isEmpty() || !missMarker.isEmpty()) {
-//        		if (!damage.isEmpty()) damage.poll();
-//        		if (!missMarker.isEmpty()) missMarker.poll();
-//        	}
-        	paintDamage = false;
-        }
+//        if (paintDamage) {
+//        	Font font = new Font("Times Roman", Font.BOLD, 60);
+//        	g2D.setFont(font);
+//        	g2D.setColor(Color.BLACK);
+////        	if (!MyPanel.damage.isEmpty()) {
+////        		if (missMarker.poll() == false) {
+////            		MyPanel.damage.poll();
+////            		g2D.drawString("MISS", this.getWidth() - this.getWidth() / 4, this.getHeight() / 5);
+////            		g2D.setColor(Color.YELLOW);
+////            		g2D.drawString("MISS", this.getWidth() - this.getWidth() / 4 - 5, this.getHeight() / 5 + 2);
+////            		System.out.println(damage.size() + " damage size after poll)");
+////            	} else {
+////            		System.out.println(damage.size() + " damage size in else statement)");
+////            		int theDamage = damage.poll();
+////    				g2D.drawString("" +theDamage, this.getWidth() - this.getWidth() / 4, this.getHeight() / 5);
+////    				g2D.setColor(Color.YELLOW);
+////    				g2D.drawString("" + theDamage, this.getWidth() - this.getWidth() / 4 - 5, this.getHeight() / 5 + 2);
+////            	}
+////        	}
+//        	
+//        	paintDamage = false;
+//        }
 	}
 	
 	public void setEnabled() {
@@ -114,21 +108,33 @@ public class MyPanel extends JPanel implements Observer {
 		this.enabled = false;
 		repaint();
 	}
-
-	public void setHero(AbstractHero theHero) {
-		this.hero = theHero;
-		src = this.hero.getImageSource();
-//		((AbstractHero) theHero).addObserver(this);
-		repaint();
+	
+	public void setSource(String src) {
+		
+		this.src = src;
+		this.repaint();
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero && !(o instanceof AbstractVillain)) {
-			this.hero = (AbstractHero)arg;
-		}
+		// TODO Auto-generated method stub
 		
 	}
+
+//	public void setHero(AbstractHero theHero) {
+//		this.hero = theHero;
+//		src = this.hero.getImageSource();
+////		((AbstractHero) theHero).addObserver(this);
+//		repaint();
+//	}
+//
+//	@Override
+//	public void update(Observable o, Object arg) {
+//		if (arg instanceof AbstractHero && !(o instanceof AbstractVillain)) {
+//			this.hero = (AbstractHero)arg;
+//		}
+//		
+//	}
 
 
 	

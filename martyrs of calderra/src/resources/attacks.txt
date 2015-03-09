@@ -1,1 +1,1 @@
-ThunderingSmash, QuickStrike, 
+ThunderingSmash, QuickStrike, HealingTouch, 

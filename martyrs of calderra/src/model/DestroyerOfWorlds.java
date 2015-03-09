@@ -1,5 +1,6 @@
 package model;
 
+import layout.CalderraGUI;
 import interfaces.Weapon;
 
 @SuppressWarnings("serial")
@@ -10,12 +11,9 @@ public class DestroyerOfWorlds extends AbstractCard implements Weapon {
 	private static final int COST = 50;
 	
 	
-	public DestroyerOfWorlds() {
-		super();
-	}
 	
-	public DestroyerOfWorlds(AbstractHero hero) {
-		super(hero, SRC, CLASSNAME);
+	public DestroyerOfWorlds(CalderraGUI controller) {
+		super(SRC, CLASSNAME, controller);
 		this.cost = COST;
 	}
 	

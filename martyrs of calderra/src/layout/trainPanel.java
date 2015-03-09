@@ -18,16 +18,16 @@ import model.AbstractVillain;
 @SuppressWarnings("serial")
 public class trainPanel extends MyPanel implements MouseListener, UserInteractive {
 
-	AbstractHero hero;
-	BattleGUI battle;
-	boolean mouseOn;
+	private CalderraGUI controller;
+	private BattleGUI battle;
+	private boolean mouseOn;
 	
-	public trainPanel(String src, AbstractHero hero) {
+	public trainPanel(String src, CalderraGUI controller) {
 		super(src);
 		mouseOn = false;
-		this.hero = hero;
+		this.controller = controller;
 		this.addMouseListener(this);
-		this.hero.addObserver(this);
+		this.controller.getHero().addObserver(this);
 		this.enabled = true;
 		repaint();
 	}
@@ -45,31 +45,35 @@ public class trainPanel extends MyPanel implements MouseListener, UserInteractiv
         
 	}
 	
-	@Override
-	public void update(Observable o, Object arg) {
-		if (o instanceof AbstractHero && !(o instanceof AbstractVillain)) {
-			this.hero = (AbstractHero)o;
-		}
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-			this.hero.addObserver(this);
-			
-			if (battle != null) {
-				battle.update(o, arg);
-				this.hero.addObserver(battle);
-			}
-		}
-		
-	}
+//	@Override
+//	public void update(Observable o, Object arg) {
+////		if (o instanceof AbstractHero && !(o instanceof AbstractVillain)) {
+////			this.hero = (AbstractHero)o;
+////		}
+////		if (arg instanceof AbstractHero) {
+////			this.hero = (AbstractHero) arg;
+////			this.hero.addObserver(this);
+////			
+////			
+////		}
+//		
+////		if (battle != null) {
+////			battle.update(o, arg);
+//////			this.controller.getHero().addObserver(battle);
+////		}
+////		
+//	}
 	
 	public void mouseClicked(MouseEvent e) {
-		if (!this.hero.getIsInBattle()) {
-			if (battle != null) {
-				battle.setHero(this.hero);
-				battle.newFight(this.hero);
-			} else {
-				battle = new BattleGUI(this.hero);
-			}
+		if (!this.controller.getHero().getIsInBattle()) {
+//			if (battle != null) {
+////				battle.setHero();
+////				battle.newFight(this.controller.getHero());
+//				battle = new BattleGUI(this.controller);
+//			} else {
+//				battle = new BattleGUI(this.controller);
+//			}
+			battle = new BattleGUI(this.controller);
 			battle.setLocationRelativeTo(null);
 			battle.setVisible(true);
 		}

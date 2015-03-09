@@ -7,6 +7,9 @@ import java.awt.Graphics2D;
 
 import javax.swing.ImageIcon;
 
+import layout.CalderraGUI;
+
+@SuppressWarnings("serial")
 public class Consumable extends AbstractCard implements java.io.Serializable {
 
 	protected static int ID;
@@ -15,12 +18,12 @@ public class Consumable extends AbstractCard implements java.io.Serializable {
 	
 	public int localID;
 	
-	public Consumable() {
-		this(null, "", "");
+	public Consumable(CalderraGUI controller) {
+		this("", "", controller);
 	}
 	
-	public Consumable(AbstractHero hero, String src, String name) {
-		super(hero, src, name);
+	public Consumable(String src, String name, CalderraGUI controller) {
+		super(src, name, controller);
 		
 		this.quantity = 1;
 		repaint();
@@ -31,6 +34,10 @@ public class Consumable extends AbstractCard implements java.io.Serializable {
 //		ID++;
 //	}
 	
+	@Override
+	public void consume() {
+		this.decrementQuantity();
+	}
 	
 	public void incrementQuantity() {
 		incrementQuantity(1);

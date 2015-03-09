@@ -34,42 +34,42 @@ public class EquipmentPanel extends JPanel implements Observer {
 	private JProgressBar healthBar;
 	private JProgressBar magicBar;
 	private int num;
-	private AbstractHero hero;
+	private CalderraGUI controller;
 	
-	public EquipmentPanel(AbstractHero hero, int num, HeroDisplayPanel heroPanel) {
+	public EquipmentPanel(CalderraGUI controller, int num, HeroDisplayPanel heroPanel) {
 		this.num = num;
-		this.hero = hero;
+		this.controller = controller;
 		this.heroPanel = heroPanel;
-		this.hero.addObserver(this.heroPanel);
+//		this.hero.addObserver(this.heroPanel);
 		equipPanels = new ArrayList<InventoryPanel>();
 		attackPanels = new ArrayList<InventoryPanel>();
-		healthBar = new JProgressBar(0, hero.getAttributes().get("maxHealth"));
-		healthBar.setString("HP: " + (hero.getAttributes().get("currentHealth") + "/" + healthBar.getMaximum()));
+		healthBar = new JProgressBar(0, this.controller.getHero().getAttributes().get("maxHealth"));
+		healthBar.setString("HP: " + (this.controller.getHero().getAttributes().get("currentHealth") + "/" + healthBar.getMaximum()));
 		healthBar.setStringPainted(true);
-		healthBar.setValue(hero.getAttributes().get("currentHealth"));
+		healthBar.setValue(this.controller.getHero().getAttributes().get("currentHealth"));
 //		healthBar.setBackground(new Color(0, 255, 255));
-		magicBar = new JProgressBar(0, hero.getAttributes().get("maxMagicPower"));
-		magicBar.setString("MP: " + (this.hero.getAttributes().get("currentMagicPower") + "/" + magicBar.getMaximum()));
+		magicBar = new JProgressBar(0, this.controller.getHero().getAttributes().get("maxMagicPower"));
+		magicBar.setString("MP: " + (this.controller.getHero().getAttributes().get("currentMagicPower") + "/" + magicBar.getMaximum()));
 		magicBar.setStringPainted(true);
-		magicBar.setValue(hero.getAttributes().get("currentMagicPower"));
+		magicBar.setValue(this.controller.getHero().getAttributes().get("currentMagicPower"));
 //		magicBar.setBackground(new Color(255, 0, 0));
 		
 		equipPanel = new CardPanel(num / 2 - 1, num / 2 + 1);
 		attackPanel = new CardPanel(1, 4);
-		setup(hero, heroPanel);
+		setup(controller, heroPanel);
 		
 //		hero.addObserver(this);
 	}
 	
 	
-	private void setup(AbstractHero hero, HeroDisplayPanel heroPanel) {
+	private void setup(CalderraGUI controller, HeroDisplayPanel heroPanel) {
 		for (int i = 0; i < MAX_EQUIP; i++) {
-			InventoryPanel panel = new InventoryPanel();
+			InventoryPanel panel = new InventoryPanel(this.controller);
 			equipPanels.add(panel);
 			equipPanel.add(panel);
 		}
 		for (int i = 0; i < ATTACK_LIM; i++) {
-			InventoryPanel panel = new InventoryPanel();
+			InventoryPanel panel = new InventoryPanel(this.controller);
 			attackPanels.add(panel);
 			attackPanel.add(panel);
 		}
@@ -115,9 +115,9 @@ public class EquipmentPanel extends JPanel implements Observer {
 
 	private void setEquipCards() {
 		for (int i = 0; i < MAX_EQUIP; i++) {
-			if (hero.getEquipped().size() > i) {
+			if (this.controller.getHero().getEquipped().size() > i) {
 				equipPanels.get(i).removeCard();
-				equipPanels.get(i).addCard(hero.getEquipped().get(i));
+				equipPanels.get(i).addCard(this.controller.getHero().getEquipped().get(i));
 				equipPanels.get(i).getCard().isEquipped = true;
 				equipPanels.get(i).getCard().isInBag = false;
 			} else {
@@ -129,9 +129,9 @@ public class EquipmentPanel extends JPanel implements Observer {
 	
 	private void setAttackCards() {
 		for (int i = 0; i < ATTACK_LIM; i++) {
-			if (hero.getAttack().size() > i) {
+			if (this.controller.getHero().getAttack().size() > i) {
 				attackPanels.get(i).removeCard();
-				attackPanels.get(i).addCard(hero.getAttack().get(i));
+				attackPanels.get(i).addCard(this.controller.getHero().getAttack().get(i));
 				attackPanels.get(i).getCard().isEquipped = true;
 				attackPanels.get(i).getCard().isInBag = false;
 			} else {
@@ -143,19 +143,22 @@ public class EquipmentPanel extends JPanel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {		
-		if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-			heroPanel.update(o, this.hero);
-			this.hero.addObserver(this);
-			setEquipCards();
-			setAttackCards();
-		}
+//		if (arg instanceof AbstractHero) {
+//			this.hero = (AbstractHero) arg;
+//			heroPanel.update(o, this.controller.getHero());
+//			this.hero.addObserver(this);
+//			setEquipCards();
+//			setAttackCards();
+//		}
 		
-		healthBar.setMaximum((int) (this.hero.getmaxHealth()));
-		healthBar.setValue(this.hero.getcurrentHealth());
+		setEquipCards();
+		setAttackCards();
+		this.heroPanel.update(this.controller.getHero());
+		healthBar.setMaximum((int) (this.controller.getHero().getmaxHealth()));
+		healthBar.setValue(this.controller.getHero().getcurrentHealth());
 		healthBar.setString("HP: " + healthBar.getValue() + "/" + healthBar.getMaximum());
-		magicBar.setMaximum(this.hero.getMaxMagicPower());
-		magicBar.setValue(this.hero.getCurrentMagicPower());
+		magicBar.setMaximum(this.controller.getHero().getMaxMagicPower());
+		magicBar.setValue(this.controller.getHero().getCurrentMagicPower());
 		magicBar.setString("MP: " + magicBar.getValue() + "/" + magicBar.getMaximum());
 		
 		

@@ -1,5 +1,6 @@
 package model;
 
+import layout.CalderraGUI;
 import interfaces.Stacker;
 
 public class MagicPotion extends Consumable implements Stacker {
@@ -10,8 +11,8 @@ public class MagicPotion extends Consumable implements Stacker {
 	private static final String SRC = "/src/resources/MagicPotion.jpg";
 	private static final int COST = 10;
 	
-	public MagicPotion(AbstractHero hero) {
-		super(hero, SRC, "Magic Potion");
+	public MagicPotion(CalderraGUI controller) {
+		super(SRC, "Magic Potion", controller);
 		this.localID = ID;
 		this.cost = COST;
 	}
@@ -24,13 +25,14 @@ public class MagicPotion extends Consumable implements Stacker {
 	
 	@Override
 	public void consume() {
-		int amount = this.hero.consume(this, CONSUME_TYPE_POTION, 20);
-		this.hero.getAttributes().put("currentMagicPower", this.hero.getCurrentMagicPower() + amount >
-				this.hero.getMaxMagicPower() ? this.hero.getMaxMagicPower() : this.hero.getCurrentMagicPower() + amount);
+		super.consume();
+		int amount = this.controller.getHero().consume(this, CONSUME_TYPE_POTION, 20);
+		this.controller.getHero().getAttributes().put("currentMagicPower", this.controller.getHero().getCurrentMagicPower() + amount >
+		this.controller.getHero().getMaxMagicPower() ? this.controller.getHero().getMaxMagicPower() : this.controller.getHero().getCurrentMagicPower() + amount);
 		
-		System.out.println("Current Magic Power: " + this.hero.getCurrentMagicPower());
+		System.out.println("Current Magic Power: " + this.controller.getHero().getCurrentMagicPower());
 		System.out.println("Quantity: " + this.getQuantity());
-		this.hero.changed("stats");
+		this.controller.getHero().changed("stats");
 	}
 	
 }

@@ -20,7 +20,7 @@ import javax.swing.plaf.FontUIResource;
 import model.AbstractHero;
 
 @SuppressWarnings("serial")
-public class CharacterDisplayPanel extends JPanel implements Observer {
+public class CharacterDisplayPanel extends JPanel {
 
 	private static final int FIELD_HEIGHT = 25;
 //	private HashMap<String, JProgressBar> bars;
@@ -34,20 +34,20 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 	
 	private JProgressBar healthBar;
 	private JTextField progressBar;
-	private AbstractHero hero;
+	private CalderraGUI controller;
 	
-	public CharacterDisplayPanel(HeroDisplayPanel heroPanel, AbstractHero hero) {
+	public CharacterDisplayPanel(HeroDisplayPanel heroPanel, CalderraGUI controller) {
 		super();
 		this.heroPanel = heroPanel;
-		this.hero = hero;
+		this.controller = controller;
 //		bars = new HashMap<String, JProgressBar>();
 		bars = new ArrayList<JProgressBar>();
 //		barAdditions = new ArrayList<Integer>();
 		buttons = new ArrayList<AttributeButton>();
 //		barPercents = new ArrayList<Double>();
 //		setTempValues();
-		this.hero.calculateAdditionalStats();
-		goldField = new JTextField("" + hero.getAttributes().get("gold"));
+		this.controller.getHero().calculateAdditionalStats();
+		goldField = new JTextField("" + this.controller.getHero().getAttributes().get("gold"));
 		goldField.setEditable(false);
 //		goldField.setBackground(Color.WHITE);
 		goldField.setHorizontalAlignment((int)JTextField.CENTER_ALIGNMENT);
@@ -57,7 +57,7 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 		goldField.setBorder(new LineBorder(Color.CYAN));
 		goldField.setForeground(Color.CYAN);
 		
-		levelField = new JTextField("" + hero.getAttributes().get("level"));
+		levelField = new JTextField("" + this.controller.getHero().getAttributes().get("level"));
 		levelField.setEditable(false);
 		levelField.setBackground(Color.WHITE);
 		levelField.setHorizontalAlignment((int)JTextField.CENTER_ALIGNMENT);
@@ -68,18 +68,18 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 		levelField.setForeground(Color.CYAN);
 		
 //		pb = new JProgressBar(0, hero.getAttributes().get("Experience To Next Level"));
-		progressBar = new JTextField(0 + "/" + hero.getAttributes().get("Experience To Next Level"));
+		progressBar = new JTextField(0 + "/" + this.controller.getHero().getAttributes().get("Experience To Next Level"));
 		progressBar.setEditable(false);
 		progressBar.setHorizontalAlignment((int)JTextField.CENTER_ALIGNMENT);
 		progressBar.setPreferredSize(new Dimension(FIELD_HEIGHT * 4, FIELD_HEIGHT));
 		progressBar.setFocusable(false);
-		hero.addObserver(this);
-		setup(heroPanel, hero);
+//		hero.addObserver(this);
+		setup(heroPanel, this.controller);
 		
 	}
 	
 	
-	private void setup(HeroDisplayPanel heroPanel, AbstractHero hero) {
+	private void setup(HeroDisplayPanel heroPanel, CalderraGUI controller) {
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(MyPanel.SCREEN_WIDTH / 2,MyPanel. SCREEN_HEIGHT / 2));
 		
@@ -115,12 +115,12 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 		
 		JLabel health = new JLabel("\t" + labels[0]);
 		health.setForeground(Color.CYAN);
-		healthBar = new JProgressBar(0, (int) hero.getAttributes().get("max" + labels[0]));
+		healthBar = new JProgressBar(0, (int) this.controller.getHero().getAttributes().get("max" + labels[0]));
 		healthBar.setFont(new Font("Times Roman", Font.BOLD, 12));
 		healthBar.setOpaque(true);
 		healthBar.setBackground(new Color(20, 20, 20, 255));
 		healthBar.setStringPainted(true);
-		healthBar.setValue(hero.getAttributes().get("currentHealth"));
+		healthBar.setValue(this.controller.getHero().getAttributes().get("currentHealth"));
 		healthBar.setString(healthBar.getValue() + "/" + healthBar.getMaximum());
 		labelPanel.add(health);
 		centerPanel.add(healthBar);
@@ -135,7 +135,7 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 			pb.setOpaque(true);
 			pb.setForeground(Color.cyan);
 			pb.setFont(new Font("Times Roman", Font.BOLD, 12));
-			pb.setValue(hero.getAttributes().get(labels[i].toLowerCase()));
+			pb.setValue(this.controller.getHero().getAttributes().get(labels[i].toLowerCase()));
 			pb.setString(pb.getValue() + "/" + pb.getMaximum());
 			pb.setStringPainted(true);
 //			bars.put(labels[i], pb);
@@ -166,7 +166,7 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 //		pb.setValue(hero.getAttributes().get("experience"));
 //		pb.setString(pb.getValue() + "/" + pb.getMaximum());
 //		pb.setStringPainted(true);
-		progressBar.setText(this.hero.getAttributes().get("experience") + "/" + this.hero.getAttributes().get("Experience To Next Level"));
+		progressBar.setText(this.controller.getHero().getAttributes().get("experience") + "/" + this.controller.getHero().getAttributes().get("Experience To Next Level"));
 		progressBar.setBorder(new LineBorder(Color.CYAN));
 		progressBar.setBackground(Color.black);
 		progressBar.setForeground(Color.CYAN);
@@ -180,10 +180,10 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 		changePanel.setBackground(new Color(20, 20, 20, 100));
 		changePanel.setPreferredSize(new Dimension(MyPanel.SCREEN_WIDTH / 10, MyPanel.SCREEN_HEIGHT / 2));
 		changePanel.setLayout(new GridLayout(labels.length, 2));
-		AttributeButton healthButton = new AttributeButton(hero, "maxHealth", true);
-		AttributeButton anotherButton = new AttributeButton(hero, "maxHealth", false);
-		this.hero.addObserver(healthButton);
-		this.hero.addObserver(anotherButton);
+		AttributeButton healthButton = new AttributeButton(this.controller, "maxHealth", true);
+		AttributeButton anotherButton = new AttributeButton(this.controller, "maxHealth", false);
+//		this.controller.getHero().addObserver(healthButton);
+//		this.controller.getHero().addObserver(anotherButton);
 		healthButton.setEnabled(false);
 		anotherButton.setEnabled(false);
 		healthButton.setFocusable(false);
@@ -195,8 +195,8 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 		changePanel.add(healthButton);
 		changePanel.add(anotherButton);
 		for (int i = 1; i < labels.length; i++) {
-			AttributeButton button = new AttributeButton(hero, labels[i].toLowerCase(), true);
-			AttributeButton another = new AttributeButton(hero, labels[i].toLowerCase(), false);
+			AttributeButton button = new AttributeButton(this.controller, labels[i].toLowerCase(), true);
+			AttributeButton another = new AttributeButton(this.controller, labels[i].toLowerCase(), false);
 			button.setText("+");
 			another.setText("-");
 			button.setEnabled(false);
@@ -205,8 +205,8 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 			another.setFocusable(false);
 			buttons.add(button);
 			buttons.add(another);
-			this.hero.addObserver(button);
-			this.hero.addObserver(another);
+//			this.controller.getHero().addObserver(button);
+//			this.controller.getHero().addObserver(another);
 			changePanel.add(button);
 			changePanel.add(another);
 		}
@@ -221,43 +221,42 @@ public class CharacterDisplayPanel extends JPanel implements Observer {
 	}
 
 
-	@Override
-	public void update(Observable o, Object arg) {
+	public void update(AbstractHero theHero) {
 //		System.out.println("in updater for chracter display");
-		this.heroPanel.update(o, arg);
+		this.heroPanel.update(theHero);
 		
 		
-		if(arg instanceof AbstractHero) {
-			this.hero = (AbstractHero) arg;
-			this.hero.addObserver(this);
-			for (AttributeButton b: buttons) {
-				b.setHero((AbstractHero) arg);
-				this.hero.addObserver(b);
+//		if(arg instanceof AbstractHero) {
+//			this.controller.getHero() = (AbstractHero) arg;
+//			this.controller.getHero().addObserver(this);
+//			for (AttributeButton b: buttons) {
+//				b.setHero((AbstractHero) arg);
+//				this.controller.getHero().addObserver(b);
+//				
+//
+//			}
+//		}
+		
 				
-
-			}
-		}
-		
-				
-		this.hero.calculateAdditionalStats();
+		this.controller.getHero().calculateAdditionalStats();
 		String[] atts = {"strength", "accuracy", "armor", "intel", "speed", "maxHealth"};
 		for (int i = 0; i < bars.size() && i < atts.length - 1; i++) {
-			bars.get(i).setValue(this.hero.getAttributes().get(atts[i]) + this.hero.getAdditionalStats().get(atts[i]));
+			bars.get(i).setValue(this.controller.getHero().getAttributes().get(atts[i]) + this.controller.getHero().getAdditionalStats().get(atts[i]));
 			bars.get(i).setString(bars.get(i).getValue() + "/" + bars.get(i).getMaximum());
 //			bars.get(i).setStringPainted(true);
 		}
 
-		healthBar.setMaximum((int)(this.hero.getAttributes().get("maxHealth") + this.hero.getAdditionalStats().get("maxHealth")));
-		healthBar.setValue(heroPanel.getHero().getAttributes().get("currentHealth"));
+		healthBar.setMaximum((int)(this.controller.getHero().getAttributes().get("maxHealth") + this.controller.getHero().getAdditionalStats().get("maxHealth")));
+		healthBar.setValue(controller.getHero().getAttributes().get("currentHealth"));
 		healthBar.setString(healthBar.getValue() + "/" + healthBar.getMaximum());
 
-		goldField.setText("" + this.hero.getAttributes().get("gold"));
-		levelField.setText("" + this.hero.getAttributes().get("level"));
+		goldField.setText("" + this.controller.getHero().getAttributes().get("gold"));
+		levelField.setText("" + this.controller.getHero().getAttributes().get("level"));
 
-		//				pb.setMaximum(this.hero.getAttributes().get("Experience To Next Level"));
-		//				pb.setValue(this.hero.getAttributes().get("experience"));
+		//				pb.setMaximum(this.controller.getHero().getAttributes().get("Experience To Next Level"));
+		//				pb.setValue(this.controller.getHero().getAttributes().get("experience"));
 		//				pb.setString(pb.getValue() + "/" + pb.getMaximum());
-		progressBar.setText(this.hero.getAttributes().get("experience") + "/" + this.hero.getAttributes().get("Experience To Next Level"));		
+		progressBar.setText(this.controller.getHero().getAttributes().get("experience") + "/" + this.controller.getHero().getAttributes().get("Experience To Next Level"));		
 		
 		
 	}

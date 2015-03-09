@@ -1,5 +1,7 @@
 package model;
 
+import layout.CalderraGUI;
+
 public class Mage extends AbstractHero {
 
 	private static final String SOURCE = "./src/resources/Mage.jpg";
@@ -7,12 +9,12 @@ public class Mage extends AbstractHero {
 	private static final String[] INITIAL_ATTS = {"intel", "maxMagicPower", "currentMagicPower", "accuracy"};
 	
 	
-	public Mage() {
-		this("Silith");
+	public Mage(CalderraGUI controller) {
+		this("Silith", controller);
 	}
 	
-	public Mage(String name) {
-		super(name, SOURCE, CLASS, INITIAL_ATTS);
+	public Mage(String name, CalderraGUI controller) {
+		super(name, SOURCE, CLASS, INITIAL_ATTS, controller);
 	}
 	
 	

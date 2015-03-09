@@ -1,5 +1,8 @@
 package layout;
 
+import interfaces.AttackCard;
+import interfaces.Magical;
+import interfaces.Physical;
 import inventory.InventoryPanel;
 
 import java.awt.BorderLayout;
@@ -12,7 +15,11 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Timer;
+import java.util.concurrent.DelayQueue;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -25,6 +32,7 @@ import model.AbstractVillain;
 import model.Heal;
 import model.Warrior;
 
+@SuppressWarnings("serial")
 public class BattleGUI extends JDialog implements Observer {
 
 	
@@ -33,46 +41,54 @@ public class BattleGUI extends JDialog implements Observer {
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 	
-	HeroDisplayPanel displayHero;
-	HeroDisplayPanel displayVillain;
-	AbstractHero hero;
-	AbstractVillain villain;
+	private HeroDisplayPanel displayHero;
+	private HeroDisplayPanel displayVillain;
+	private CalderraGUI controller;
 	
-	AbstractCard heroAttack;
-	AbstractCard enemyAttack;
+	private javax.swing.Timer myTimer;
+	private MyTimerListener myTimerListener;
+	private MyWindowListener myListener;
+	private ArrayList<InventoryPanel> panels;
+	private ArrayList<InventoryPanel> theVillainPanels;
 	
-	public boolean heroAttackUsed;
-	public boolean villainAttackUsed; 
+	private Queue<String> heroQueue;
+	private Queue<String> enemyQueue;
+	private int heroNum;
+	private int enemyNum;
+	private boolean heroFirst;
+	private int attacksCompleted;
 	
-	
-	MyWindowListener myListener;
-	ArrayList<InventoryPanel> panels;
-	ArrayList<InventoryPanel> theVillainPanels;
-	
-	public BattleGUI(AbstractHero hero) {
-		heroAttack = null;
-		enemyAttack = null;
-		heroAttackUsed = false;
-		villainAttackUsed = false;
+	public BattleGUI(CalderraGUI controller) {
 		
 		
-		this.hero = hero;
-		this.hero.addObserver(this);
-		this.hero.enterBattle();
+		heroQueue = new PriorityQueue<String>();
+		enemyQueue = new PriorityQueue<String>();
+		heroNum = 0;
+		enemyNum = 0;
+		attacksCompleted = 0;
+		heroFirst = false;
+		
+		this.controller = controller;
+		this.controller.createNewEnemy();
+		this.controller.getHero().setEnemy(this.controller.getEnemy());
+		this.controller.getEnemy().setEnemy(this.controller.getHero());
+		this.controller.getHero().addObserver(this);
+		this.controller.getHero().enterBattle();
+		this.controller.getEnemy().enterBattle();
+		
 		panels = new ArrayList<>();
 		theVillainPanels = new ArrayList<>();
 		
-		this.villain = new AbstractVillain(new Warrior("Harkin"));
-		this.hero.enemy = this.villain;
-		this.villain.enemy = this.hero;
-		this.hero.enemy.addObserver(this);
-
 		
-		this.displayHero = new HeroDisplayPanel(this.hero);
-		this.displayVillain = new HeroDisplayPanel(this.villain);
+		this.displayHero = new HeroDisplayPanel(this.controller, this.controller.getHero());
+		this.displayVillain = new HeroDisplayPanel(this.controller, this.controller.getEnemy());
 		
-		myListener = new MyWindowListener(this.hero, this);
+		myListener = new MyWindowListener(this.controller.getHero(), this);
 		this.addWindowListener(myListener);
+		
+		myTimerListener = new MyTimerListener();
+		myTimer = new javax.swing.Timer(300, myTimerListener);
+		
 		
 		setup();
 	}
@@ -113,37 +129,29 @@ public class BattleGUI extends JDialog implements Observer {
 		ArrayList<InventoryPanel> villainAttackPanels = new ArrayList<InventoryPanel>();
 		ArrayList<InventoryPanel> heroAttackPanels = new ArrayList<InventoryPanel>();
 		for (int i = 0; i < AbstractHero.MAX_ATTACK; i++) {
-			InventoryPanel iPanel = new InventoryPanel();
-			InventoryPanel uPanel = new InventoryPanel();
-			heroAttackPanels.add(uPanel);
-			panel.add(uPanel);
-			villainAttackPanels.add(iPanel);
-			villainPanel.add(iPanel);
-			panels.add(iPanel);
-			panels.add(uPanel);
-			theVillainPanels.add(iPanel);
+			InventoryPanel iPanel = new InventoryPanel(this.controller);
+			InventoryPanel uPanel = new InventoryPanel(this.controller);
+			heroAttackPanels.add(uPanel); //list
+			panel.add(uPanel); //panel
+			villainAttackPanels.add(iPanel);//list
+			villainPanel.add(iPanel); //panel
+			panels.add(iPanel); //list
+			panels.add(uPanel); //list
+			theVillainPanels.add(iPanel); //list
 		}
 		int i;
 		int j;
-		for (i = 0, j = 0; i < this.hero.getAttack().size() || j < this.villain.getAttack().size();) {
-			if (i < this.hero.getAttack().size()) {
-				
-				heroAttackPanels.get(i).addCard(this.hero.getAttack().get(i));
+		for (i = 0, j = 0; i < this.controller.getHero().getAttack().size() || j < this.controller.getEnemy().getAttack().size();) {
+			if (i < this.controller.getHero().getAttack().size()) {
+				heroAttackPanels.get(i).addCard(this.controller.getHero().getAttack().get(i));
 				heroAttackPanels.get(i).getCard().isInBattle = true;
-//				InventoryPanel cardPanel = new InventoryPanel(card);
-//				panel.add(cardPanel);
-//				panels.add(cardPanel);
-				 i++;
+				i++;
 			}
-			if (j < this.villain.getAttack().size()) {
-//				AbstractCard vCard = ;
-//				vCard.isInBattle = true;
-				villainAttackPanels.get(j).addCard(this.villain.getAttack().get(j));
+			if (j < this.controller.getEnemy().getAttack().size()) {
+				villainAttackPanels.get(j).addCard(this.controller.getEnemy().getAttack().get(j));
 				villainAttackPanels.get(j).getCard().enabled = false;
-				
-//				vCardPanel.getCard().isInBattle = true;
-//				villainPanel.add(vCardPanel);
-//				panels.add(vCardPanel);
+				theVillainPanels.get(j).addCard(this.controller.getEnemy().getAttack().get(j));
+				theVillainPanels.get(j).getCard().enabled = false;
 				j++;
 			}
 			
@@ -162,146 +170,218 @@ public class BattleGUI extends JDialog implements Observer {
 		add(attackCardPanel, BorderLayout.SOUTH);
 		add(heroPanel, BorderLayout.CENTER);
 		
-		for (AbstractCard c: this.hero.getAttack()) {
-			System.out.println(c.getName() + " " + c.isInBattle);
-		}
 		
 	}
 	
 	
 	private void chooseOrder() {
-		System.out.println("In choose order");
 		Random rand = new Random();
-		int heroSpeed = rand.nextInt(20) + hero.getSpeed();
-		int enemySpeed = rand.nextInt(20) + this.villain.getSpeed();
+		int heroSpeed = rand.nextInt(20) + this.controller.getHero().getSpeed();
+		int enemySpeed = rand.nextInt(20) + this.controller.getEnemy().getSpeed();
 		if (heroSpeed > enemySpeed) {
-			heroAttack.progressAttack();
-//			heroAttackUsed = true;
-		} else {
-//			villainAttackUsed = true;
-			enemyAttack = villain.chooseAttack();
-			for (int i = 0; i < theVillainPanels.size(); i++) {
-				if (theVillainPanels.get(i).getCard().equals(enemyAttack)) {
-					theVillainPanels.get(i).mouseClicked(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, 0, 1, false, MouseEvent.BUTTON1));
-				}
-			}
-			enemyAttack.progressAttack();
+			heroFirst = true;
 		}
 	}
 	
-	public void setHero(AbstractHero hero) {
-		this.hero = hero;
+	public int progressAttackHero() {
 		
-		this.removeWindowListener(myListener);
-		myListener = new MyWindowListener(this.hero, this);
-		this.addWindowListener(myListener);
-		this.hero.addObserver(this);
-//		setCards();
-	}
-
-	public void newFight(AbstractHero hero) {
-		this.hero = hero;
-		heroAttack = null;
-		enemyAttack = null;
-		heroAttackUsed = false;
-		villainAttackUsed = false;
-		this.villain = new AbstractVillain(this.hero);
-		this.hero.enemy = this.villain;
-		this.hero.enemy.addObserver(this);
-		this.villain.enemy = this.hero;
-		this.hero.enterBattle();
-		displayHero.update(this.hero, this.hero);
-		displayVillain.update(this.villain, this.villain);
-//		setCards();
-	}
-	
-	private void setCards() {
+		System.out.println("hero " + this.controller.getHero() + " attack " + this.controller.getHero().attackToBeUsed);
 		
-		for (InventoryPanel panel: panels) {
-			AbstractCard theCard = panel.getCard();
-			if (this.hero != null && theCard != null) {
-				theCard.hero = this.hero;
-				panel.removeCard();
-				panel.addCard(theCard);
+		if (this.controller.getHero().getCurrentMagicPower() >= ((AttackCard)this.controller.getHero().attackToBeUsed).getCruxCost() && !this.controller.getHero().attackToBeUsed.isInBag) {			
+			if ((this.controller.getHero().attackToBeUsed instanceof Physical || this.controller.getHero().attackToBeUsed instanceof Magical)
+					&& this.controller.getEnemy() != null) {
+				int damage = this.controller.getHero().getHit(this.controller.getHero().attackToBeUsed);
+				return damage;
+				
+			} else if (this.controller.getHero().attackToBeUsed instanceof Heal) {
+				//ACTUAL HEAL TAKES PLACE IN HEAL METHOD OF HERO
+				int heal = this.controller.getHero().heal(this.controller.getHero().attackToBeUsed, this.controller.getHero().attackToBeUsed.getHealType());
+				return heal;
 			}
 			
 		}
+		return 0;
 	}
+	
+	public int progressAttackEnemy() {
+		if (this.controller.getEnemy().getCurrentMagicPower() >= ((AttackCard)this.controller.getEnemy().attackToBeUsed).getCruxCost()) {			
+			if ((this.controller.getEnemy().attackToBeUsed instanceof Physical || this.controller.getEnemy().attackToBeUsed instanceof Magical)
+					&& this.controller.getEnemy() != null) {
+				int damage = this.controller.getEnemy().getHit(this.controller.getEnemy().attackToBeUsed);
+				return damage;
+				
+			} else if (this.controller.getEnemy().attackToBeUsed instanceof Heal) {
+				//ACTUAL HEAL TAKES PLACE IN HEAL METHOD OF HERO
+				int heal = this.controller.getEnemy().heal(this.controller.getEnemy().attackToBeUsed, this.controller.getEnemy().attackToBeUsed.getHealType());
+				return heal;
+			}
+			
+		}
+		return 0;
+	}
+	
+	private void hitOrMissHero() {
+		
+		if (!(this.controller.getHero().attackToBeUsed instanceof Heal)) {
+			heroNum = this.controller.getEnemy().takeHit(heroNum);
+			this.controller.getEnemy().getAttributes().put("currentHealth", Math.max(0, (this.controller.getEnemy().getAttributes().get("currentHealth") - heroNum)));
+		} else {
+			this.controller.getHero().getAttributes().put("currentHealth", 
+					this.controller.getHero().getcurrentHealth() + heroNum <= this.controller.getHero().getmaxHealth() ? 
+							this.controller.getHero().getcurrentHealth() + heroNum : this.controller.getHero().getmaxHealth());
+		}
+		attacksCompleted++;
+		
+		//LOAD GIFS
+		for (String s: this.controller.getHero().attackToBeUsed.getattackGif()) {
+			heroQueue.offer(s);
+		}
+		if (heroNum == 0 && !(this.controller.getHero().attackToBeUsed instanceof Heal)) {
+			
+			for (String s: this.controller.getEnemy().getEnemyMissGif()) {
+				enemyQueue.offer(s);
+			}
+			
+		} else if (this.controller.getHero().attackToBeUsed instanceof Heal) {
+			//no change in image for enemy heal
+			for (int i = 0; i < this.controller.getHero().attackToBeUsed.getattackGif().size(); i++) {
+				enemyQueue.offer(this.controller.getEnemy().getImageSource());
+			}
+		
+		} else {
+			
+			for (String s: this.controller.getEnemy().getEnemyHitGif()) {
+				enemyQueue.offer(s);
+			}
+			
+		}
+		
+		if (this.controller.getEnemy().getcurrentHealth() > 0 && attacksCompleted < 2) hitOrMissEnemy();
+	}
+	
+	private void hitOrMissEnemy() {
+		
+		if (!(this.controller.getEnemy().attackToBeUsed instanceof Heal)) {
+			enemyNum = this.controller.getHero().takeHit(enemyNum);
+			this.controller.getHero().getAttributes().put("currentHealth", Math.max(0, (this.controller.getHero().getAttributes().get("currentHealth") - enemyNum)));
+		} else {
+			this.controller.getEnemy().getAttributes().put("currentHealth", 
+					this.controller.getEnemy().getcurrentHealth() + enemyNum <= this.controller.getEnemy().getmaxHealth() ? 
+							this.controller.getEnemy().getcurrentHealth() + enemyNum : this.controller.getEnemy().getmaxHealth());
+		}
+		attacksCompleted++;
+		
+		//LOAD GIFS
+		for (String s: this.controller.getEnemy().attackToBeUsed.getattackGif()) {
+			enemyQueue.offer(s);
+		}
+		if (enemyNum == 0 && !(this.controller.getHero().attackToBeUsed instanceof Heal)) {
+			//if miss show miss image
+			for (String s: this.controller.getHero().getEnemyMissGif()) {
+				heroQueue.offer(s);
+			}
+			
+		} else if (this.controller.getEnemy().attackToBeUsed instanceof Heal) {
+			//no change in image for enemy heal
+			for (int i = 0; i < this.controller.getEnemy().attackToBeUsed.getattackGif().size(); i++) {
+				heroQueue.offer(this.controller.getHero().getImageSource());
+			}
+		
+		} else {
+			//if hit show hit image
+			for (String s: this.controller.getHero().getEnemyHitGif()) {
+				heroQueue.offer(s);
+			}
+			
+		}
+		
+		if (this.controller.getHero().getcurrentHealth() > 0 && attacksCompleted < 2) hitOrMissHero();
+	}
+	
+	
+	private void toggleButtons(boolean toggle) {
+		for(InventoryPanel p: panels) {
+			if (p.getCard() != null) p.getCard().setEnabled(toggle);
+		}
+	}
+	
+	private void checkState() {
+		displayHero.update(this.controller.getHero());
+		displayVillain.update(this.controller.getEnemy());
+		if (this.controller.getHero().getcurrentHealth() < 1 || (this.controller.getEnemy() != null && this.controller.getEnemy().getcurrentHealth() < 1)) {
+			this.dispose();//maybe move this to after the visual of the experience gain is finished.
+			this.controller.getHero().exitBattle();
+
+			for (int i = 0; i < panels.size(); i++) {
+				if (panels.get(i).getCard() != null) {
+					panels.get(i).getCard().isInBattle = false;
+					panels.get(i).mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
+				}
+			}
+			displayHero.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
+			displayVillain.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
+
+		
+		}
+	}
+	
 	
 	@Override
 	public void update(Observable o, Object arg) {
 		
-		if (o instanceof AbstractVillain) displayVillain.update(o, arg);
-		else displayHero.update(o, arg);
 		
 		if (arg instanceof String) {
-			if (arg.equals("hit")) {
-				if (this.hero.getcurrentHealth() < 1 || (this.villain != null && this.villain.getcurrentHealth() < 1)) {
-					this.hero.exitBattle();
 
-					for (int i = 0; i < panels.size(); i++) {
-						if (panels.get(i).getCard() != null) {
-							panels.get(i).getCard().isInBattle = false;
-							panels.get(i).mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
-						}
+			if (arg.equals("attacks chosen")) {
+					toggleButtons(false);
+					chooseOrder();
+					heroNum = progressAttackHero();
+					enemyNum = progressAttackEnemy();
+					if (heroFirst) {
+						hitOrMissHero();
 					}
-					displayHero.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
-					displayVillain.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
-					heroAttackUsed = false;
-					villainAttackUsed = false;
-					dispose(); //maybe move this to after the visual of the experience gain is finished.
+					else {
+						hitOrMissEnemy();
+					}
 					
-				}
-			} else if (((String)arg).equals("Battle Show") && (this.hero.getcurrentHealth() > 0 && this.hero.enemy != null)) {
-				this.setVisible(true);
-			} else if (((String)arg).equals("Battle Show")) {
-				this.hero.changed("Battle Over");
-				
-			} else if (this.hero != null && ((String)arg).equals("Attack Completed")) {
-				if (this.hero.enemy != null && o.equals(this.villain)) {
-					System.out.println("instance of Villain, set to true");
-					villainAttackUsed = true;
-					if (this.hero.getcurrentHealth() > 0 && !heroAttackUsed) heroAttack.progressAttack();
-					else heroAttackUsed = true;
-				} else { 
-					System.out.println("Instance of Hero, set to true");
-					heroAttackUsed = true;
-					if (this.hero.enemy != null && this.hero.enemy.getcurrentHealth() > 0 && !villainAttackUsed) {
-						enemyAttack = this.villain.chooseAttack();	
-						enemyAttack.progressAttack();
-					} else villainAttackUsed = true;
-				}
-				if (heroAttackUsed && villainAttackUsed) {
-					System.out.println("Both true, set to false");
-					heroAttackUsed = false;
-					villainAttackUsed = false;
-				}
+					myTimer.start();
+					
+					checkState();
+					
+					
+					
+					//reset for next round
+					heroFirst = false; 
+					attacksCompleted = 0;
+					heroNum = 0;
+					enemyNum = 0;
 			}
-
-		} else if (arg instanceof AbstractHero) {
-			this.hero = (AbstractHero)arg;
-			this.removeWindowListener(myListener);
-			myListener = new MyWindowListener(this.hero, this);
-			this.addWindowListener(myListener);
-			displayHero.setHero(this.hero);
-			displayHero.repaint();
 			
-		} else if (arg instanceof AbstractCard) {
-			if ((((AbstractCard)arg).isInBattle || arg instanceof Heal)) {
-				if (o instanceof AbstractVillain) {
-					 enemyAttack = (AbstractCard)arg;
-				} else if (o instanceof AbstractHero) {
-					heroAttack = (AbstractCard)arg;
-				}
-				if (!heroAttackUsed && !villainAttackUsed) chooseOrder();
-			}
-			this.hero.addObserver((AbstractCard)arg);
-			((AbstractCard)arg).hero = this.hero;
 		} 
 		
 	}
 	
+	protected void step() {
+		if (!heroQueue.isEmpty() && !enemyQueue.isEmpty()) {
+			displayHero.setSource(heroQueue.poll());
+			displayVillain.setSource(enemyQueue.poll());
+		} else {
+			myTimer.stop();
+			toggleButtons(true);
+			displayHero.setSource(this.controller.getHero().getImageSource());
+			displayVillain.setSource(this.controller.getEnemy().getImageSource());
+		}
+	}
 	
+	@SuppressWarnings("unused")
+	private class MyTimerListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			step();
+			 
+		}
+	}
 }
 
 

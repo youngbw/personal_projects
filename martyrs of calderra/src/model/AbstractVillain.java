@@ -4,22 +4,24 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
+import layout.CalderraGUI;
 import FileReaders.TextReader;
 
+@SuppressWarnings("serial")
 public class AbstractVillain extends AbstractHero {
 
 	protected Random rand;
-	protected AbstractHero hero;
+	protected CalderraGUI controller;
 	protected ArrayList<AbstractCard> genAttackList;
 	protected TextReader tr = new TextReader();
 	public int healAmount;
 	
-	public AbstractVillain(AbstractHero hero) {
-		super("Villain", hero.getImageSource(), "Fear", null);
+	public AbstractVillain(CalderraGUI controller) {
+		super("Villain", controller.getHero().getImageSource(), "Fear", null, controller);
 		rand = new Random();
 		genAttackList = new ArrayList<AbstractCard>();
-		this.hero = hero;
-		this.enemy = hero;
+		this.controller = controller;
+		this.enemy = this.controller.getHero();
 		statModification();
 		loadList();
 		loadAttacks();
@@ -29,29 +31,29 @@ public class AbstractVillain extends AbstractHero {
 	
 	private void statModification() {
 		
-		this.getAttributes().put("strength", this.hero.getAttributes().get("strength"));
-		this.getAttributes().put("intel", this.hero.getAttributes().get("intel"));
-		this.getAttributes().put("armor", this.hero.getAttributes().get("armor"));
-		this.getAttributes().put("speed", this.hero.getAttributes().get("speed"));
-		this.getAttributes().put("accuracy", this.hero.getAttributes().get("accuracy"));
+		this.getAttributes().put("strength", this.controller.getHero().getAttributes().get("strength"));
+		this.getAttributes().put("intel", this.controller.getHero().getAttributes().get("intel"));
+		this.getAttributes().put("armor", this.controller.getHero().getAttributes().get("armor"));
+		this.getAttributes().put("speed", this.controller.getHero().getAttributes().get("speed"));
+		this.getAttributes().put("accuracy", this.controller.getHero().getAttributes().get("accuracy"));
 		
 		//randomly assigns a level to this villain, use for health and magic power stats
-		this.getAttributes().put("level", rand.nextInt(4) + this.hero.getAttributes().get("level"));
+		this.getAttributes().put("level", rand.nextInt(4) + this.controller.getHero().getAttributes().get("level"));
 	}
 	
 	
 	public AbstractCard chooseAttack() {
 		AbstractCard card = this.getAttack().get(rand.nextInt(this.getAttack().size()));
 //		this.addObserver(card);
-		card.hero = this;
-		this.addObserver(card);
+//		card.hero = this;
+//		this.addObserver(card); ***
 		return card;
 //		choice.mouseClicked(new MouseEvent(null, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
 	}
 	
 	private void loadList() {
-		genAttackList = tr.readAttacks(this);
-		genAttackList.add(new HealingTouch(this));
+		genAttackList = tr.readAttacks(this.controller);
+//		genAttackList.add(new HealingTouch(this.controller));
 //		for (AbstractCard c: genAttackList) {
 //			c.hero = this;
 //		}
@@ -65,6 +67,7 @@ public class AbstractVillain extends AbstractHero {
 			AbstractCard card = genAttackList.get(rand.nextInt(genAttackList.size()));
 			if (!attacks.contains(card)) {
 				card.isInBattle = true;
+				card.enabled = false;
 				attacks.add(card);
 				genAttackList.remove(card);
 				values++;
@@ -73,6 +76,9 @@ public class AbstractVillain extends AbstractHero {
 		}
 	}
 	
+	public void setAttackToBeUsed() {
+		this.attackToBeUsed = this.chooseAttack();
+	}
 	
 	
 	

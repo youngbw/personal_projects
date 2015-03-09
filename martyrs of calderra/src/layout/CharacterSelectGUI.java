@@ -25,14 +25,14 @@ public class CharacterSelectGUI extends javax.swing.JDialog implements MouseList
 	protected static final Dimension SCREEN_SIZE = KIT.getScreenSize();
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
-	CalderraGUI gui;
+	private CalderraGUI controller;
 	ArrayList<HeroDisplayPanel> panels;
 	
-	public CharacterSelectGUI(CalderraGUI gui) {
+	public CharacterSelectGUI(CalderraGUI controller) {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		this.gui = gui;
+		this.controller = controller;
 		panels = new ArrayList<>();
-		gui.characterSelectOn = true;
+		controller.characterSelectOn = true;
 		setup();
 	}
 	
@@ -41,10 +41,11 @@ public class CharacterSelectGUI extends javax.swing.JDialog implements MouseList
 		this.setSize(new Dimension(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 		this.setLocation(SCREEN_WIDTH / 2 - this.getWidth() / 2, SCREEN_HEIGHT / 2 - this.getHeight() / 2);
 		
-		HeroDisplayPanel warriorPanel = new HeroDisplayPanel(new Warrior());
-		HeroDisplayPanel rangerPanel = new HeroDisplayPanel(new Ranger());
-		HeroDisplayPanel magePanel = new HeroDisplayPanel(new Mage());
-		HeroDisplayPanel druidPanel = new HeroDisplayPanel(new Druid());
+		//Have to do these separate
+		HeroDisplayPanel warriorPanel = new HeroDisplayPanel(controller, this.controller.getHero());
+		HeroDisplayPanel rangerPanel = new HeroDisplayPanel(controller, this.controller.getHero());
+		HeroDisplayPanel magePanel = new HeroDisplayPanel(controller, this.controller.getHero());
+		HeroDisplayPanel druidPanel = new HeroDisplayPanel(controller, this.controller.getHero());
 		
 		warriorPanel.addMouseListener(this);
 		rangerPanel.addMouseListener(this);
@@ -86,7 +87,7 @@ public class CharacterSelectGUI extends javax.swing.JDialog implements MouseList
 						finished = true;
 						theHero.resetInventory();
 						setNewHero(theHero, name);
-						gui.characterSelectOn = false;
+						controller.characterSelectOn = false;
 						
 						//dispose of all info panels that may be sticking around
 						for (HeroDisplayPanel h: panels) h.infoPanel.dispose();
@@ -102,23 +103,23 @@ public class CharacterSelectGUI extends javax.swing.JDialog implements MouseList
 	private void setNewHero(AbstractHero theHero, String name) {
 		if (theHero instanceof Warrior) {
 			System.out.println("instance of Warrior");
-			gui.setHero(new Warrior(name));
+			controller.setHero(new Warrior(name, this.controller));
 		} else if (theHero instanceof Ranger) {
 			System.out.println("instance of Ranger");
-			gui.setHero(new Ranger(name));
+			controller.setHero(new Ranger(name, this.controller));
 		} else if (theHero instanceof Mage) {
 			System.out.println("instance of Mage");
-			gui.setHero(new Mage(name));
+			controller.setHero(new Mage(name, this.controller));
 		} else if (theHero instanceof Druid) {
 			System.out.println("instance of Druid");
-			gui.setHero(new Druid(name));
+			controller.setHero(new Druid(name, this.controller));
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		HeroDisplayPanel panel = (HeroDisplayPanel) e.getSource();
-		select(panel.getHero());
+		select(controller.getHero()); //have to fix this for character select -- panel.getHero() = old version
 	}
 
 	@Override

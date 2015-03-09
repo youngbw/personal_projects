@@ -1,7 +1,5 @@
 package layout;
 
-import inventory.InventoryGUI;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,18 +43,19 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 	
 	private MyKeyListener kListen;
 	
-	public AbstractHero hero;
+	private AbstractHero hero;
+	private AbstractVillain enemy;
 	
 	public CalderraGUI() {
-//		this.setResizable(false);
 		this.setLayout(new BorderLayout());
-//		this.setBackground(new Color(0, 0, 0, 0));
 		this.setSize(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 		this.setLocation(SCREEN_WIDTH / 2 / 2, SCREEN_HEIGHT / 2 / 2);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		characterSelectOn = false;
+		hero = new Ranger(this);
+		enemy = new AbstractVillain(this);
 		tr = new TextReader();
-		hero = new Ranger();
+		
 		
 	}
 	
@@ -69,29 +68,29 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.setBorder(new LineBorder(Color.BLACK));
 		
-		heroPanel = new HeroDisplayPanel(hero);
+		heroPanel = new HeroDisplayPanel(this, this.hero);
 		heroPanel.setBackground(transparent);
 		
-		heroPanel2 = new HeroDisplayPanel(hero);
+		heroPanel2 = new HeroDisplayPanel(this, this.hero);
 		heroPanel2.setBackground(transparent);
 		
-		storyPanel = new StoryPanel("", 1, 3, this.hero);
+		storyPanel = new StoryPanel("", 1, 3, this);
 		storyPanel.setBackground(transparent);
 		
-		characterPanel = new CharacterDisplayPanel(heroPanel, hero);
+		characterPanel = new CharacterDisplayPanel(heroPanel, this);
 		characterPanel.setBackground(transparent);
 		
-		equipmentPanel = new EquipmentPanel(hero, AbstractHero.MAX_EQUIP, heroPanel2);
+		equipmentPanel = new EquipmentPanel(this, AbstractHero.MAX_EQUIP, heroPanel2);
 		equipmentPanel.setBackground(transparent);
 		
-		shopPanel = new ShopPanel(hero, tr.readShop("src/resources/shopText.txt", hero));
+		shopPanel = new ShopPanel(this, tr.readShop("src/resources/shopText.txt", this));
 		shopPanel.setBackground(transparent);
 		
-		menu = new MenuBar(hero, this);
+		menu = new MenuBar(this);
 		menu.setBackground(Color.BLACK);
 		menu.setForeground(Color.BLACK);
 		
-		addObservers();
+		hero.addObserver(this);
 		addListeners();
 		
 		tabbedPane.setBackground(transparent);
@@ -118,10 +117,6 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 		this.requestFocus(); // need this until i make a focus listener
 	}
 	
-	public void addObservers() {
-		hero.addObserver(this);
-		hero.addObserver(equipmentPanel);
-	}
 	
 	private void addListeners() {
 		
@@ -145,45 +140,60 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 		e.getComponent().requestFocus();
 	}
 	
+	//Call when a new character is chosen from the character select screen
 	public void setHero (AbstractHero hero) {
-		this.hero.resetTalentTree();
+		this.hero.resetTalentTree(); //may want to revisit this order
 		this.hero.resetInventory();
 		this.hero = hero;
 		this.hero.addObserver(this);
 		this.hero.changed();
 	}
+	
+	//THIS NEEDS TO BE DONE RIGHT
+	public void createNewEnemy() {
+		this.enemy = new AbstractVillain(this);
+		
+	}
+	
+	public AbstractVillain getEnemy() {
+		return this.enemy;
+	}
+	
+	public AbstractHero getHero() {
+//		System.out.println(this.hero);
+		return this.hero;
+		
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {
+		System.out.println("in calderraGUI update");
+		storyPanel.update(o, hero);
+		heroPanel.update(hero);
+		heroPanel2.update(hero);
+		characterPanel.update(hero);
+		equipmentPanel.update(o, arg);
+		shopPanel.update(o, hero);
 		
-		if (arg instanceof AbstractHero && !(arg instanceof AbstractVillain)) {
-			System.out.println("in calderraGUI update");
-			
-			this.removeKeyListener(kListen);
-			kListen = new MyKeyListener(hero);
-			this.addKeyListener(kListen);
-			AbstractHero hero = (AbstractHero) arg;
-			
-//			storyPanel.setHero(hero);
-			storyPanel.update(o, hero);
-			heroPanel.setHero(hero); 
-			heroPanel.update(o, hero);
-			heroPanel2.setHero(hero); 
-			heroPanel2.update(o, hero);
-//			characterPanel.setHero(hero); 
-			characterPanel.update(o, hero);
-//			equipmentPanel.setHero(hero); 
-			equipmentPanel.update(o, hero);
-//			shopPanel.setHero(hero);
-			shopPanel.update(o, hero);
-			menu.setHero(hero);
-		} else if (arg instanceof AbstractCard) {
-//			this.setVisible(false);
-		} else if (arg instanceof String) {
-			if (((String)arg).equals("Battle Over")) {
-				this.setVisible(true);
-			}
-		}
+//		if (arg instanceof String) {
+//			if (((String)arg).equals("Battle Over")) {
+//				this.setVisible(true);
+//			}
+//		}
+		
+//		if (arg instanceof AbstractHero && !(arg instanceof AbstractVillain)) {
+//			
+//			
+////			this.removeKeyListener(kListen);
+////			kListen = new MyKeyListener(hero);
+////			this.addKeyListener(kListen);
+////			AbstractHero hero = (AbstractHero) arg;
+//			
+//			
+//			
+//		} else if (arg instanceof AbstractCard) {
+////			this.setVisible(false);
+//		} else 
 		
 		
 //		revalidate();

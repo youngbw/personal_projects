@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import layout.CalderraGUI;
 import layout.InfoDisplayPanel;
 import layout.MyPanel;
 import layout.MyPopupMenu;
@@ -31,25 +32,27 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 		protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 		protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 		
-		protected AbstractHero hero;
+		protected CalderraGUI controller;
 		protected String src;
 		protected AbstractCard card;
 		
 		private InfoDisplayPanel infoPanel;
 		
-		public InventoryPanel() {
-			this("");
+		public InventoryPanel(CalderraGUI controller) {
+			this("", controller);
 		}
 		
-		public InventoryPanel(String src) {
+		public InventoryPanel(String src, CalderraGUI controller) {
 			this.src = src;
+			this.controller = controller;
 			this.setBorder(new LineBorder(Color.CYAN));
 			this.setBackground(new Color(0, 0, 0, 0));
 			this.addMouseListener(this);
 		}
 		
-		public InventoryPanel(AbstractCard card) {
+		public InventoryPanel(AbstractCard card, CalderraGUI controller) {
 			this.card = card;
+			this.controller = controller;
 //			this.card.isInBag = true;
 //			this.card.isEquipped = false;
 			this.src = card.getSrc();
@@ -89,9 +92,9 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 //	        }
 		}
 
-		public void setHero(AbstractHero hero) {
-			this.hero = hero;
-		}
+//		public void setHero(AbstractHero hero) {
+//			this.hero = hero;
+//		}
 		
 		public AbstractCard getCard() {
 			return this.card;
@@ -124,26 +127,26 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 //				repaint();
 //			}
 			
-			if (this.card != null && this.card.isEnabled()) {
+			if (this.card != null && this.card.enabled) {
 				System.out.println("Card clicked");
 				System.out.println("Card in battle? " + this.card.isInBattle);
 				if (card.pop != null && card.pop.isVisible()) card.pop.setVisible(false);
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					card.pop.setVisible(false);
-					card.pop = new MyPopupMenu(this.card.hero, card);
+					card.pop = new MyPopupMenu(this.controller, card);
 					card.pop.setLocation(e.getXOnScreen(), e.getYOnScreen());
 					card.pop.setVisible(true);
 					
 				} else if (e.getButton() == MouseEvent.BUTTON1) {
 					if (this.card.inShop) {
-						hero.buyCard(this.card);
+						this.controller.getHero().buyCard(this.card);
 					} else {
-						if ((this.card instanceof AttackCard && this.card.isInBattle) || this.card instanceof Heal) {
-							this.card.use();
-							System.out.println("Card in Battle");
+						if ((this.card instanceof AttackCard && this.card.isInBattle)) {
+							this.controller.getHero().attackToBeUsed = this.card;
+							this.controller.getEnemy().setAttackToBeUsed();
+							this.controller.getHero().changed("attacks chosen");
 						} else if (this.card instanceof Consumable) {
-							this.card.consume();
-							System.out.println("Else consume");
+							((Consumable)this.card).consume();
 						}
 					}
 				}

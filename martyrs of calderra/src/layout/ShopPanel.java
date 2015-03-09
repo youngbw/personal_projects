@@ -18,7 +18,7 @@ import javax.swing.border.LineBorder;
 import model.AbstractHero;
 
 @SuppressWarnings("serial")
-public class ShopPanel extends JPanel implements Observer {
+public class ShopPanel extends JPanel {
 
 	private static final int GRID_WIDTH = 5;
 	private static final int GRID_HEIGHT = 5;
@@ -26,13 +26,13 @@ public class ShopPanel extends JPanel implements Observer {
 	private static final String SHOP_SOURCE = "./src/resources/ezra.jpeg";
 	
 	
-	private AbstractHero hero;
+	private CalderraGUI controller;
 	private ArrayList<SubShopPanel> panels;
 	
-	public ShopPanel(AbstractHero hero, ArrayList<ArrayList<AbstractCard>> shopLists) {
+	public ShopPanel(CalderraGUI controller, ArrayList<ArrayList<AbstractCard>> shopLists) {
 		this.setLayout(new BorderLayout());
 		panels = new ArrayList<SubShopPanel>();
-		this.hero = hero;
+		this.controller = controller;
 		setup(shopLists);
 	}
 	
@@ -57,7 +57,7 @@ public class ShopPanel extends JPanel implements Observer {
 				ArrayList<AbstractCard> nextList= (ArrayList<AbstractCard>) shopLists.get(i);
 				for (int j = 0; j < nextList.size() || j < GRID_HEIGHT * GRID_WIDTH; j++) {
 					if (j < nextList.size() && nextList.get(j) != null) {
-						SubShopPanel panel = new SubShopPanel(hero, nextList.get(j));
+						SubShopPanel panel = new SubShopPanel(this.controller, nextList.get(j));
 						panels.add(panel);
 						tabPanel.add(panel);
 					} else {
@@ -79,17 +79,17 @@ public class ShopPanel extends JPanel implements Observer {
 		
 	}
 
-	@Override
+	
 	public void update(Observable o, Object arg) {
-		if (arg instanceof AbstractHero) {
-//			System.out.println("In shop hero update: " + arg.getClass().getSimpleName());
-			this.hero = (AbstractHero) arg;
-			this.hero.addObserver(this);
-			
-			for (SubShopPanel p: panels) {
-				p.update(o, arg);
-			}
-		}
+//		if (arg instanceof AbstractHero) {
+////			System.out.println("In shop hero update: " + arg.getClass().getSimpleName());
+//			this.hero = (AbstractHero) arg;
+//			this.hero.addObserver(this);
+//			
+//			for (SubShopPanel p: panels) {
+//				p.update(o, arg);
+//			}
+//		}
 		
 	}
 	

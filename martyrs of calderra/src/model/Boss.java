@@ -1,11 +1,13 @@
 package model;
 
+import layout.CalderraGUI;
+
 public class Boss extends AbstractVillain {
 
 	
 	
-	public Boss(AbstractHero hero) {
-		super(hero);
+	public Boss(CalderraGUI controller) {
+		super(controller);
 	}
 	
 	
