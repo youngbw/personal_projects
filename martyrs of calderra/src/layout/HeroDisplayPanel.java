@@ -35,17 +35,20 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
 	
 	public InfoDisplayPanel infoPanel;
 	
+	
 	private CalderraGUI controller;
+	private MyPopupMenu popupMenu;
 	private AbstractHero theHeroViewed;
 	private JProgressBar healthBar;
 	private JProgressBar magicBar;
-	private MyPanel heroPanel;
+	private JPanel heroPanel;
 	
 	private JTextField nameDisplay;
 	private String source;
 	
 	public HeroDisplayPanel(CalderraGUI controller, AbstractHero theHero) {
 		this.controller = controller;
+		popupMenu = new MyPopupMenu(controller, null);
 		this.setBackground(new Color(0, 0, 0, 0));
 		
 		this.theHeroViewed =  theHero;
@@ -77,10 +80,11 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
 	private void setup() {
 		this.setLayout(new BorderLayout());
 		this.setBorder(new LineBorder(Color.BLACK));
-		this.heroPanel = new MyPanel(this.theHeroViewed.getImageSource());
+//		this.heroPanel = new MyPanel(this.theHeroViewed.getImageSource());
+		this.heroPanel = new JPanel();
 		this.heroPanel.setLayout(new BorderLayout());
-		this.heroPanel.setBackground(MyPanel.TRANSPARENT);
-		infoPanel = new InfoDisplayPanel(this.theHeroViewed);
+		this.heroPanel.setBackground(MyPanel.FULL_ALPHA);
+		infoPanel = new InfoDisplayPanel(this.theHeroViewed, this.controller.infoDisplay.toShow);
 		JPanel progressPanel = new JPanel();
 		progressPanel.setBackground(MyPanel.TRANSPARENT);
 		progressPanel.setPreferredSize(new Dimension(SCREEN_WIDTH / 7, SCREEN_HEIGHT / 20));
@@ -115,13 +119,13 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
     public void paintComponent(final Graphics theGraphics) {
         super.paintComponent(theGraphics);
 		final Graphics2D g2D = (Graphics2D) theGraphics;
-//        g2D.drawImage(new ImageIcon(this.source).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+        g2D.drawImage(new ImageIcon(this.source).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 	
 	public void setSource(String src) {
-//		this.source = src;
-		heroPanel.setSource(src);
-//		repaint();
+		this.source = src;
+//		heroPanel.setSource(src);
+		repaint();
 	}
 	
 
@@ -132,6 +136,13 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
 //		this.controller.getHero().getAttributes().put("gold", this.theHeroViewed.getAttributes().get("gold") + 100);
 //		infoPanel.dispose();;
 //		this.theHeroViewed.changed();
+		
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			popupMenu.setVisible(false);
+			popupMenu.setLocation(e.getXOnScreen(), e.getYOnScreen());
+			popupMenu.setVisible(true);
+		}
+		
 	}
 
 	@Override
@@ -143,10 +154,10 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		if (infoPanel != null && !infoPanel.isVisible()) {
-			infoPanel = new InfoDisplayPanel(this.theHeroViewed);
-			infoPanel.setLocation(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
+//			infoPanel = new InfoDisplayPanel(this.theHeroViewed, controller.infoDisplay.toShow);
+			infoPanel.tryToSetVisible(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
 					this.getLocationOnScreen().y - infoPanel.getHeight() > 0 ? this.getLocationOnScreen().y - infoPanel.getHeight() : this.getLocationOnScreen().y + this.getHeight());
-			infoPanel.setVisible(true);
+//			infoPanel.setVisible(true);
 		}
 	}
 
@@ -177,7 +188,7 @@ public class HeroDisplayPanel extends MyPanel implements MouseListener {
 		magicBar.setMaximum(theHero.getAttributes().get("maxMagicPower"));
 		magicBar.setValue(theHero.getAttributes().get("currentMagicPower"));
 		magicBar.setString("MP: " + magicBar.getValue() + "/" + magicBar.getMaximum());
-		repaint();
+//		repaint();
 	}
 
 

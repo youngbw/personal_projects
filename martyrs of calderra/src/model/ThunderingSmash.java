@@ -12,9 +12,11 @@ public class ThunderingSmash extends AbstractCard implements Physical {
 	private static final int CRUX_COST = 5;
 	
 	public ThunderingSmash(CalderraGUI controller) {
-		super("src/resources/UndyingTremors.jpg", "Thundering Smash", controller);
+		super("src/resources/UndyingTremors.jpg", "Thundering Smash", controller, ATTACK_GIF);
 		this.cost = 100;
+		
 	}
+	
 	
 	@Override
 	public int getCruxCost() {

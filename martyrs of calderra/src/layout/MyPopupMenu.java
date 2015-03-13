@@ -27,7 +27,7 @@ public class MyPopupMenu extends JPopupMenu {
 	
 	
 	private void setup() {
-		if (!(this.controller.getHero() instanceof AbstractVillain) && !this.controller.getHero().getIsInBattle()) {
+		if (!this.controller.getHero().getIsInBattle() && card != null) {
 			if (card.isInBag && !(this.card instanceof Consumable)) {
 				JMenuItem equip = new JMenuItem("Equip");
 				equip.setMnemonic('E');
@@ -70,6 +70,26 @@ public class MyPopupMenu extends JPopupMenu {
 			
 			
 		}
+		
+		JMenuItem properties = new JMenuItem("Properties");
+		properties.setMnemonic('P');
+		properties.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				InfoDisplayPanel panel;
+				if (card != null) {
+					panel = new InfoDisplayPanel(card, true);
+					
+				} else {
+					panel = new InfoDisplayPanel(controller.getHero(), true);
+				}
+				panel.isPropertyViewer = true;
+				panel.tryToSetVisible(0, 0);
+			}
+		});
+		this.add(properties);
 		
 	}
 		

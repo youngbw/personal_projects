@@ -23,7 +23,7 @@ public class Consumable extends AbstractCard implements java.io.Serializable {
 	}
 	
 	public Consumable(String src, String name, CalderraGUI controller) {
-		super(src, name, controller);
+		super(src, name, controller, NULL_GIF);
 		
 		this.quantity = 1;
 		repaint();

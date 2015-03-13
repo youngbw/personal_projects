@@ -8,12 +8,13 @@ import interfaces.Physical;
 @SuppressWarnings("serial")
 public class QuickStrike extends AbstractCard implements Physical {
 
-	private static final String[] ATTACK_GIF = {"src/resources/Mage.jpeg", "src/resources/Mage.jpg", "/src/resources/Mage.jpg", "src/resources/Mage.jpg"};
+	private static final String[] ATTACK_GIF = {"src/resources/Mage.jpeg", "./src/resources/Mage.jpg", "/src/resources/Mage.jpg", "src/resources/Mage.jpg"};
 	private static final int CRUX_COST = 5;
 	
 	public QuickStrike(CalderraGUI controller) {
-		super("src/resources/Rage.jpg", "Quick Strike", controller);
+		super("src/resources/Rage.jpg", "Quick Strike", controller, ATTACK_GIF);
 		this.cost = 100;
+		
 	}
 	
 	
@@ -47,11 +48,12 @@ public class QuickStrike extends AbstractCard implements Physical {
 
 	@Override
 	public ArrayList<String> getAttackGif() {
-		attackGif = new ArrayList<String>();
-		for (String s: ATTACK_GIF) {
-			attackGif.add(s);
-		}
-		return attackGif;
+//		attackGif = new ArrayList<String>();
+//		for (String s: ATTACK_GIF) {
+//			attackGif.add(s);
+//		}
+		System.out.println("Attack Gif List " + attackGif.toString());
+		return super.getattackGif();
 	}
 
 	

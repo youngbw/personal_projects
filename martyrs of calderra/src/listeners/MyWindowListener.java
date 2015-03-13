@@ -10,9 +10,11 @@ import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
 
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.Timer;
 
 import layout.BattleGUI;
+import layout.CalderraGUI;
 import model.AbstractHero;
 
 public class MyWindowListener implements WindowListener, ActionListener {
@@ -25,10 +27,10 @@ public class MyWindowListener implements WindowListener, ActionListener {
 	
 //	Timer myTimer;
 	BattleGUI comp;
-	AbstractHero hero;
+	CalderraGUI controller;
 	
-	public MyWindowListener(AbstractHero hero, BattleGUI comp) {
-		this.hero = hero;
+	public MyWindowListener(CalderraGUI controller, BattleGUI comp) {
+		this.controller = controller;
 		this.comp = comp;
 //		myTimer = new Timer(0, this);
 //		myTimer.setDelay(1);
@@ -79,13 +81,14 @@ public class MyWindowListener implements WindowListener, ActionListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-		
+		this.controller.getHero().setOutOfBattle();
+//		this.controller.getHero().exitBattle(0, 0, null);
+//		comp.dispose();
 	}
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		this.hero.exitBattle();
+		
 //		this.hero.changed("Battle Show");
 //		this.hero.changed();
 		

@@ -12,7 +12,7 @@ public class ShieldOfTheRighteous extends AbstractCard implements Weapon {
 	
 	
 	public ShieldOfTheRighteous(CalderraGUI controller) {
-		super(SRC, CLASSNAME, controller);
+		super(SRC, CLASSNAME, controller, NULL_GIF);
 		this.cost = COST;
 	}
 	

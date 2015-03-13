@@ -17,6 +17,8 @@ import java.util.Scanner;
 
 import javax.sound.sampled.Line;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -48,6 +50,7 @@ public class MenuBar extends JMenuBar {
 	
 	private void setup(CalderraGUI controller) {
 		add(createFileMenu(controller));
+		add(createOptionsMenu());
 		this.controller = controller;
 	}
 	
@@ -235,10 +238,20 @@ public class MenuBar extends JMenuBar {
 		
 	}
 	
-	
-//	public void setHero(AbstractHero hero) {
-//		this.hero = hero;
-//	}
-//	
+	private JMenu createOptionsMenu() {
+		JMenu optionsMenu = new JMenu("Options");
+		final JCheckBoxMenuItem toggleProperty = new JCheckBoxMenuItem("Hide Object Info");
+		toggleProperty.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.infoDisplay.setToShow(!toggleProperty.isSelected());
+				
+			}
+		});
+		optionsMenu.add(toggleProperty);
+		
+		return optionsMenu;
+	}
 	
 }

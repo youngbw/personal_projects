@@ -1,0 +1,3 @@
+0, DestroyerOfWorlds, HealthPotion, MagicPotion
+0, HealingTouch, QuickStrike
+1, ShieldOfTheRighteous

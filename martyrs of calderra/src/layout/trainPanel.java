@@ -27,7 +27,8 @@ public class trainPanel extends MyPanel implements MouseListener, UserInteractiv
 		mouseOn = false;
 		this.controller = controller;
 		this.addMouseListener(this);
-		this.controller.getHero().addObserver(this);
+//		this.controller.getHero().addObserver(this);
+		battle = new BattleGUI(controller);
 		this.enabled = true;
 		repaint();
 	}
@@ -73,8 +74,9 @@ public class trainPanel extends MyPanel implements MouseListener, UserInteractiv
 //			} else {
 //				battle = new BattleGUI(this.controller);
 //			}
-			battle = new BattleGUI(this.controller);
-			battle.setLocationRelativeTo(null);
+//			BattleGUI battle = new BattleGUI(this.controller);
+			battle.newFight();
+			battle.setLocationRelativeTo(controller);
 			battle.setVisible(true);
 		}
 		

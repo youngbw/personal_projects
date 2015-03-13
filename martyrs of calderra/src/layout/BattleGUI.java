@@ -25,6 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
+import FileReaders.TextReader;
 import listeners.MyWindowListener;
 import model.AbstractCard;
 import model.AbstractHero;
@@ -41,6 +42,7 @@ public class BattleGUI extends JDialog implements Observer {
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 	protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
 	
+	private DropGui dropper;
 	private HeroDisplayPanel displayHero;
 	private HeroDisplayPanel displayVillain;
 	private CalderraGUI controller;
@@ -49,7 +51,9 @@ public class BattleGUI extends JDialog implements Observer {
 	private MyTimerListener myTimerListener;
 	private MyWindowListener myListener;
 	private ArrayList<InventoryPanel> panels;
-	private ArrayList<InventoryPanel> theVillainPanels;
+//	private ArrayList<InventoryPanel> theVillainPanels;
+	private ArrayList<InventoryPanel> villainAttackPanels;
+	private ArrayList<InventoryPanel> heroAttackPanels; 
 	
 	private Queue<String> heroQueue;
 	private Queue<String> enemyQueue;
@@ -59,8 +63,7 @@ public class BattleGUI extends JDialog implements Observer {
 	private int attacksCompleted;
 	
 	public BattleGUI(CalderraGUI controller) {
-		
-		
+		dropper = new DropGui(controller, 0, 0, new ArrayList<AbstractCard>());
 		heroQueue = new PriorityQueue<String>();
 		enemyQueue = new PriorityQueue<String>();
 		heroNum = 0;
@@ -69,21 +72,22 @@ public class BattleGUI extends JDialog implements Observer {
 		heroFirst = false;
 		
 		this.controller = controller;
-		this.controller.createNewEnemy();
-		this.controller.getHero().setEnemy(this.controller.getEnemy());
-		this.controller.getEnemy().setEnemy(this.controller.getHero());
+//		this.controller.createNewEnemy();
+//		this.controller.getHero().setEnemy(this.controller.getEnemy());
+//		this.controller.getEnemy().setEnemy(this.controller.getHero());
 		this.controller.getHero().addObserver(this);
-		this.controller.getHero().enterBattle();
-		this.controller.getEnemy().enterBattle();
+		
 		
 		panels = new ArrayList<>();
-		theVillainPanels = new ArrayList<>();
+//		theVillainPanels = new ArrayList<>();
+		heroAttackPanels = new ArrayList<InventoryPanel>();
+		villainAttackPanels = new ArrayList<InventoryPanel>();
 		
 		
 		this.displayHero = new HeroDisplayPanel(this.controller, this.controller.getHero());
 		this.displayVillain = new HeroDisplayPanel(this.controller, this.controller.getEnemy());
 		
-		myListener = new MyWindowListener(this.controller.getHero(), this);
+		myListener = new MyWindowListener(this.controller, this);
 		this.addWindowListener(myListener);
 		
 		myTimerListener = new MyTimerListener();
@@ -93,9 +97,36 @@ public class BattleGUI extends JDialog implements Observer {
 		setup();
 	}
 	
+	public void newFight() {
+		enemyQueue = new PriorityQueue<String>();
+		heroNum = 0;
+		enemyNum = 0;
+		attacksCompleted = 0;
+		heroFirst = false;
+		
+		this.controller.createNewEnemy();
+		
+		this.controller.getHero().setEnemy(this.controller.getEnemy());
+		this.controller.getEnemy().setEnemy(this.controller.getHero());
+		
+		this.controller.getEnemy().getAttributes().put("currentHealth", 1);//take this out after done debugging
+		this.controller.getHero().enterBattle();
+		this.controller.getEnemy().enterBattle();
+
+		
+		this.displayHero.setSource(this.controller.getHero().getImageSource());
+		this.displayVillain.setSource(this.controller.getEnemy().getImageSource());
+		
+		this.displayHero.update(this.controller.getHero());
+		this.displayVillain.update(this.controller.getEnemy());
+		
+		
+		setCards();
+	}
+	
 	
 	private void setup() {
-		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
 		this.setResizable(false);
 		this.setLayout(new BorderLayout());
@@ -126,8 +157,8 @@ public class BattleGUI extends JDialog implements Observer {
 		villainPanel.setLayout(new GridLayout(1, AbstractHero.MAX_ATTACK));
 		villainPanel.setPreferredSize(new Dimension(SCREEN_WIDTH / 2,SCREEN_HEIGHT / 8));
 		villainPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		ArrayList<InventoryPanel> villainAttackPanels = new ArrayList<InventoryPanel>();
-		ArrayList<InventoryPanel> heroAttackPanels = new ArrayList<InventoryPanel>();
+		villainAttackPanels = new ArrayList<InventoryPanel>();
+		heroAttackPanels = new ArrayList<InventoryPanel>();
 		for (int i = 0; i < AbstractHero.MAX_ATTACK; i++) {
 			InventoryPanel iPanel = new InventoryPanel(this.controller);
 			InventoryPanel uPanel = new InventoryPanel(this.controller);
@@ -137,7 +168,7 @@ public class BattleGUI extends JDialog implements Observer {
 			villainPanel.add(iPanel); //panel
 			panels.add(iPanel); //list
 			panels.add(uPanel); //list
-			theVillainPanels.add(iPanel); //list
+//			theVillainPanels.add(iPanel); //list
 		}
 		int i;
 		int j;
@@ -150,8 +181,8 @@ public class BattleGUI extends JDialog implements Observer {
 			if (j < this.controller.getEnemy().getAttack().size()) {
 				villainAttackPanels.get(j).addCard(this.controller.getEnemy().getAttack().get(j));
 				villainAttackPanels.get(j).getCard().enabled = false;
-				theVillainPanels.get(j).addCard(this.controller.getEnemy().getAttack().get(j));
-				theVillainPanels.get(j).getCard().enabled = false;
+				villainAttackPanels.get(j).addCard(this.controller.getEnemy().getAttack().get(j));
+				villainAttackPanels.get(j).getCard().enabled = false;
 				j++;
 			}
 			
@@ -173,6 +204,28 @@ public class BattleGUI extends JDialog implements Observer {
 		
 	}
 	
+	private void setCards() {
+		int i = 0;
+		int j = 0;
+		for (InventoryPanel p: villainAttackPanels) {
+			if (i < this.controller.getEnemy().getAttack().size()) {
+				p.addCard(this.controller.getEnemy().getAttack().get(i));
+				this.controller.getEnemy().getAttack().get(i).enabled = false;
+			} else {
+				p.removeCard();
+			}
+			i++;
+		}
+		
+		for (InventoryPanel p: heroAttackPanels) {
+			if (j < this.controller.getHero().getAttack().size()) {
+				p.addCard(this.controller.getHero().getAttack().get(j));
+			} else {
+				p.removeCard();
+			}
+			j++;
+		}
+	}
 	
 	private void chooseOrder() {
 		Random rand = new Random();
@@ -301,7 +354,7 @@ public class BattleGUI extends JDialog implements Observer {
 	
 	private void toggleButtons(boolean toggle) {
 		for(InventoryPanel p: panels) {
-			if (p.getCard() != null) p.getCard().setEnabled(toggle);
+			if (p.getCard() != null) p.getCard().enabled = toggle;
 		}
 	}
 	
@@ -309,8 +362,9 @@ public class BattleGUI extends JDialog implements Observer {
 		displayHero.update(this.controller.getHero());
 		displayVillain.update(this.controller.getEnemy());
 		if (this.controller.getHero().getcurrentHealth() < 1 || (this.controller.getEnemy() != null && this.controller.getEnemy().getcurrentHealth() < 1)) {
-			this.dispose();//maybe move this to after the visual of the experience gain is finished.
-			this.controller.getHero().exitBattle();
+			
+			fightDrops();
+			
 
 			for (int i = 0; i < panels.size(); i++) {
 				if (panels.get(i).getCard() != null) {
@@ -320,9 +374,28 @@ public class BattleGUI extends JDialog implements Observer {
 			}
 			displayHero.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
 			displayVillain.mouseExited(new MouseEvent(this, 1, System.currentTimeMillis(), 0, 0, 0, 0, false));
-
+			
+			this.setVisible(false);
+//			this.dispose();
 		
 		}
+	}
+	
+	private void fightDrops() {
+		Random rand = new Random();
+		int experienceGained = rand.nextInt(this.controller.getEnemy().getLevel() * 5) + this.controller.getHero().getAttributes().get("level") * 5;
+		int goldGained = rand.nextInt(this.controller.getHero().getLevel() * 20 + this.controller.getEnemy().getLevel() * 10) + 1;
+		
+		TextReader reader = new TextReader();
+		ArrayList<AbstractCard> cardList = reader.readDrops(controller);
+		
+//		dropper = new DropGui(controller, goldGained, experienceGained, cardList);
+		dropper.setNewDrop(goldGained, experienceGained, cardList);
+		dropper.setLocationRelativeTo(this);
+		dropper.setVisible(true);
+		
+		System.out.println("Drops: " + cardList.toString());
+		this.controller.getHero().exitBattle(experienceGained, goldGained, cardList);
 	}
 	
 	
@@ -348,8 +421,6 @@ public class BattleGUI extends JDialog implements Observer {
 					
 					checkState();
 					
-					
-					
 					//reset for next round
 					heroFirst = false; 
 					attacksCompleted = 0;
@@ -373,7 +444,6 @@ public class BattleGUI extends JDialog implements Observer {
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private class MyTimerListener implements ActionListener {
 
 		@Override

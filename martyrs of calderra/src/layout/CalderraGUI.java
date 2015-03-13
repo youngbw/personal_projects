@@ -31,7 +31,7 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 	
 	public boolean characterSelectOn;
 
-	
+	public InfoDisplayPanel infoDisplay;
 	private StoryPanel storyPanel;
 	private CharacterDisplayPanel characterPanel;
 	private HeroDisplayPanel heroPanel;
@@ -55,7 +55,7 @@ public class CalderraGUI extends JFrame implements Observer, FocusListener {
 		hero = new Ranger(this);
 		enemy = new AbstractVillain(this);
 		tr = new TextReader();
-		
+		infoDisplay = new InfoDisplayPanel(this, this.infoDisplay.toShow);
 		
 	}
 	

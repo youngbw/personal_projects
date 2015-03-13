@@ -29,7 +29,8 @@ import model.AbstractVillain;
 public class MyPanel extends JPanel implements Observer {
 
 	public static final Color TRANSPARENT = new Color(20, 20, 20, 150);
-	
+	public static final Color FULL_ALPHA = new Color(0, 0, 0, 0);
+	public static final String DEFAULT_BACKGROUND = "./src/resources/inventoryPanelBackground.jpg";
 	protected static final Toolkit KIT = Toolkit.getDefaultToolkit();
 	protected static final Dimension SCREEN_SIZE = KIT.getScreenSize();
 	protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;

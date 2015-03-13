@@ -10,5 +10,4 @@ public interface AttackCard {
 	int getCruxCost();
 	
 	ArrayList<String> getAttackGif();
-	
 }

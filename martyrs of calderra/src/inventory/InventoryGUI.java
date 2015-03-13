@@ -146,7 +146,7 @@ public class InventoryGUI extends JDialog {
 	}
 	
 	private void loadBag() {
-		MyPanel thePanel = new MyPanel("./src/resources/insideBag.jpg");
+		MyPanel thePanel = new MyPanel("./src/resources/insidebag.jpg");
 		thePanel.setLayout(new GridLayout((int)Math.sqrt(MAX_BAG_SIZE), (int)Math.sqrt(MAX_BAG_SIZE)));
 		for (int i = 0; i < MAX_BAG_SIZE; i++) {
 			thePanel.add(inventoryPanels.get(i));

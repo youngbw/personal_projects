@@ -19,7 +19,7 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 	
 	public static final int INCREMENT = 1;
 	public static final int DECREMENT = -1;
-	
+	protected static final String[] NULL_GIF = {"", "", "", ""};
 	protected ArrayList<String> attackGif;
 	
 
@@ -47,6 +47,7 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 	public boolean isEquipped;
 	public boolean isInBag;
 	public boolean isInBattle;
+	public boolean isDrop;
 	public static MyPopupMenu pop;
 	public boolean enabled;
 	
@@ -58,11 +59,11 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 	public boolean mouseOn;
 	
 	public AbstractCard(CalderraGUI controller) {
-		this("", "", controller);
+		this("", "", controller, NULL_GIF);
 		
 	}
 	
-	public AbstractCard(String src, String name, CalderraGUI controller) {
+	public AbstractCard(String src, String name, CalderraGUI controller, String[] gif) {
 //		super(src);
 		this.src = src;
 		this.name = name;
@@ -75,6 +76,7 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 		this.isInBag = false;
 		this.isEquipped = false;
 		this.isInBattle = false;
+		this.isDrop = false;
 		this.enabled = true;
 		this.mouseOn = false;
 		healType = Heal.HEAL_TYPE_NONE;
@@ -104,14 +106,19 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 		pop = new MyPopupMenu(this.controller, this);
 //		this.controller.getHero().addObserver(this);
 		this.addMouseListener(this);
+		setupGif(gif);
 	}
 	
 	public AbstractCard(AbstractCard card) {
-		this(card.src, card.getName(), card.controller);
+		this(card.src, card.getName(), card.controller, NULL_GIF);
 		this.cost = card.cost;
 	}
 	
-	
+	private void setupGif(String[] gif) {
+		for (int i = 0; i < gif.length; i++) {
+			this.attackGif.add(gif[i]);
+		}
+	}
 
 //	/**
 //	 * Repaint the desired image on the panel.
@@ -171,6 +178,10 @@ public class AbstractCard extends JPanel implements MouseListener, java.io.Seria
 	public void cardBought() {
 		this.inShop = false;
 		this.isInBag = true;
+	}
+	
+	public void setIsDrop(boolean set) {
+		this.isDrop = set;
 	}
 	
 	public boolean isEnabled() {

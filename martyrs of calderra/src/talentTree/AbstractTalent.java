@@ -14,6 +14,7 @@ import java.util.Observer;
 
 import javax.swing.ImageIcon;
 
+import layout.CalderraGUI;
 import layout.InfoDisplayPanel;
 import layout.MyPanel;
 import model.AbstractHero;
@@ -54,7 +55,7 @@ public abstract class AbstractTalent extends MyPanel implements Observer, MouseL
 		totalPointsAvailable = 0;
 		this.hero = hero;
 		this.addMouseListener(this);
-		infoPanel = new InfoDisplayPanel(this);
+		infoPanel = new InfoDisplayPanel(this, true);
 		this.setup();
 	}
 	

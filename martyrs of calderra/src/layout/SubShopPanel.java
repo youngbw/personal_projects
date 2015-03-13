@@ -30,7 +30,7 @@ public class SubShopPanel extends MyPanel implements MouseListener {
 	public SubShopPanel(CalderraGUI controller, AbstractCard card) {
 		this.card = card;
 		this.controller = controller;
-		infoPanel = new InfoDisplayPanel(this.card);
+		infoPanel = new InfoDisplayPanel(this.card, controller.infoDisplay.toShow);
 		setup();
 	}
 	
@@ -93,9 +93,9 @@ public class SubShopPanel extends MyPanel implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		if (infoPanel != null && !infoPanel.isVisible()) {
-			infoPanel.setLocation(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
+			infoPanel.tryToSetVisible(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
 					this.getLocationOnScreen().y - infoPanel.getHeight() > 0 ? this.getLocationOnScreen().y - infoPanel.getHeight() : this.getLocationOnScreen().y + this.getHeight());
-			infoPanel.setVisible(true);
+//			infoPanel.setVisible(true);
 		}
 				
 	}

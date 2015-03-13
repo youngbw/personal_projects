@@ -19,7 +19,7 @@ public class Heal extends AbstractCard implements AttackCard, HealingCard {
 	
 	
 	public Heal(String src, String name, CalderraGUI controller) {
-		super(src, name, controller);
+		super(src, name, controller, NULL_GIF);
 		this.healType = HEAL_TYPE_NONE;
 		healingAmount = 0;
 	}

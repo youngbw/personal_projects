@@ -99,4 +99,42 @@ public class TextReader {
 		
 		return new ArrayList<AbstractCard>();
 	}
+	
+	public ArrayList<AbstractCard> readDrops(CalderraGUI controller) {
+		boolean notReached = true;
+		int num = 0;
+		try {
+			Scanner fileScan = new Scanner(new File("src/resources/drops.txt"));
+			ArrayList<AbstractCard> cardList = new ArrayList<>();
+			while (fileScan.hasNextLine() && notReached) {
+				String nextLine = fileScan.nextLine();
+				
+				if (!nextLine.contains("" + num)) num++;
+				if (num > controller.getHero().getBossesDefeated()) notReached = false;
+				
+				if (notReached) {
+					Scanner lineScan = new Scanner(nextLine);
+					lineScan.useDelimiter(", ");
+					lineScan.next();
+					while (lineScan.hasNext()) {
+						String cardName = lineScan.next();						
+						Class<?> card = Class.forName("model." + cardName);
+						Constructor<?> con = card.getConstructor(CalderraGUI.class);
+						Object real = con.newInstance(controller);
+//						him.addObserver((AbstractCard)real);
+						cardList.add((AbstractCard) real);
+					}
+					lineScan.close();
+					
+				}
+			}
+			fileScan.close();
+			return cardList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return new ArrayList<AbstractCard>();
+	}
 }

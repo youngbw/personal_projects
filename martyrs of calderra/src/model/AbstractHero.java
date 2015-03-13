@@ -338,7 +338,7 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 	
 	public void equipCard(AbstractCard card) {
 		//insert enemy attack graphic here
-		if (!this.isInBattle) {
+		if (!this.isInBattle || (this.isInBattle && card.isDrop)) {
 			if (card instanceof Weapon && this.getEquipped().size() < MAX_EQUIP && !equipped.contains(card)) {
 				equipped.add(inventory.removeCard(card));
 				
@@ -348,6 +348,7 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 //			card.isInBag = false;
 //			card.isEquipped = true;
 			card.setEquipped();
+			card.isDrop = false;
 			setChanged();
 			notifyObservers("equip");
 		}
@@ -415,6 +416,14 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			
 		}
 		
+	}
+	
+	public void addCard(AbstractCard card) {
+		if (!this.bagFull()) {
+			inventory.addCard(card);
+		} else {
+			JOptionPane.showMessageDialog(null, "You do not have space in your inventory", "Insufficient Space", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
 	public boolean bagFull() {
@@ -500,9 +509,7 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 		inventory.enterBattle();
 	}
 	
-	public void exitBattle() {
-		Random rand = new Random();
-		
+	public void setOutOfBattle() {
 		this.isInBattle = false;
 		for (AbstractCard card: attack) {
 			card.isInBattle = false;
@@ -511,8 +518,16 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			card.isInBattle = false;
 		}
 		inventory.exitBattle();
+	}
+	
+	public void exitBattle(int experienceGained, int goldGained, ArrayList<AbstractCard> cardsFound) {
+//		Random rand = new Random();
+		setOutOfBattle();
 		
+		//IF YOU WON
 		if (this.enemy != null && this.enemy.getcurrentHealth() < 1) {
+			//Add gold only if you won the battle
+			attributeMap.put("gold", this.getGold() + goldGained);
 			
 			//INCREMENT BOSS KILLED IF BOSS
 			if (this.enemy instanceof Boss) {
@@ -524,8 +539,8 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 			attributeMap.put("currentMagicPower", getCurrentMagicPower() + (getCurrentMagicPower() / 3) <= getMaxMagicPower() ? getCurrentMagicPower() + getCurrentMagicPower() / 3 : getMaxMagicPower());
 			
 			//ADD EXPERIENCE
-			int experienceGained = rand.nextInt(this.enemy.getLevel() * 5) + attributeMap.get("level") * 5;
-			System.out.println("Experienced gained: " + experienceGained);
+//			int experienceGained = rand.nextInt(this.enemy.getLevel() * 5) + attributeMap.get("level") * 5;
+//			System.out.println("Experienced gained: " + experienceGained);
 			
 			//IF LEVEL GAINED
 			if (attributeMap.get("experience") + experienceGained >= attributeMap.get("Experience To Next Level") && getLevel() < LEVEL_CAP) {
@@ -556,7 +571,7 @@ public abstract class AbstractHero extends Observable implements Hero, java.io.S
 				//		attributeMap.get("experience") + experienceGained : attributeMap.get("Experience To Next Level"));
 				
 			}
-			//DROPS
+			
 			
 			
 		} else if (getcurrentHealth() < 1) { //IF YOU DIED

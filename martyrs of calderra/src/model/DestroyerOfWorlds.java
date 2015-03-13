@@ -13,7 +13,7 @@ public class DestroyerOfWorlds extends AbstractCard implements Weapon {
 	
 	
 	public DestroyerOfWorlds(CalderraGUI controller) {
-		super(SRC, CLASSNAME, controller);
+		super(SRC, CLASSNAME, controller, AbstractCard.NULL_GIF);
 		this.cost = COST;
 	}
 	

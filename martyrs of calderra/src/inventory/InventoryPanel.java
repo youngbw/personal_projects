@@ -25,12 +25,15 @@ import model.AbstractHero;
 import model.Consumable;
 import model.Heal;
 
+@SuppressWarnings("serial")
 public class InventoryPanel extends MyPanel implements MouseListener {
 
 		protected static final Toolkit KIT = Toolkit.getDefaultToolkit();
 		protected static final Dimension SCREEN_SIZE = KIT.getScreenSize();
 		protected static final int SCREEN_WIDTH = SCREEN_SIZE.width;
 		protected static final int SCREEN_HEIGHT = SCREEN_SIZE.height;
+		
+		public static final String DEFAULT_BACKGROUND = "./src/resources/inventoryPanelBackground.jpg";
 		
 		protected CalderraGUI controller;
 		protected String src;
@@ -55,8 +58,8 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 			this.controller = controller;
 //			this.card.isInBag = true;
 //			this.card.isEquipped = false;
-			this.src = card.getSrc();
-			infoPanel = new InfoDisplayPanel(this.card);
+			if (card == null) this.src = DEFAULT_BACKGROUND; else this.src = card.getSrc();
+			infoPanel = new InfoDisplayPanel(this.card, controller.infoDisplay.toShow);
 			this.setBackground(new Color(0, 0, 0, 0));
 			this.addMouseListener(this);
 		}
@@ -69,9 +72,9 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 	    public void paintComponent(final Graphics theGraphics) {
 	        super.paintComponent(theGraphics);
 			final Graphics2D g2D = (Graphics2D) theGraphics;
-	        g2D.drawImage(new ImageIcon(src).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
-	        if (this.card != null) {
-	        	
+	       
+	        if (this.card != null && !src.equals("")) {
+	        	g2D.drawImage(new ImageIcon(src).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 	        	if (this.card.getQuantity() > 1) {
 	           	 int width = this.getWidth() / 3;
 //	                g2D.setColor(Color.BLACK);
@@ -86,10 +89,12 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 	        		g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
 	        	}
 
-	        }// else {
-//	        	g2D.drawImage(new ImageIcon("").getImage(), 0, 0, null);
-//	        	
-//	        }
+	        } else {
+	        	g2D.drawImage(new ImageIcon(DEFAULT_BACKGROUND).getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+//	        	g2D.setColor(MyPanel.TRANSPARENT);
+//	        	g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
+	        	
+	        }
 		}
 
 //		public void setHero(AbstractHero hero) {
@@ -104,7 +109,7 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 			this.card = card;
 //			this.card.isInBag = true;
 			this.src = card.getSrc();
-			infoPanel = new InfoDisplayPanel(this.card);
+			infoPanel = new InfoDisplayPanel(this.card, controller.infoDisplay.toShow);
 			repaint();
 		}
 		
@@ -114,7 +119,7 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 			if (infoPanel != null) {
 				infoPanel.dispose();
 			}
-			infoPanel = null;
+//			infoPanel = null;
 			this.card = null;
 			repaint();
 
@@ -128,15 +133,16 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 //			}
 			
 			if (this.card != null && this.card.enabled) {
-				System.out.println("Card clicked");
-				System.out.println("Card in battle? " + this.card.isInBattle);
+//				System.out.println("Card clicked");
+//				System.out.println("Card in battle? " + this.card.isInBattle);
+				
 				if (card.pop != null && card.pop.isVisible()) card.pop.setVisible(false);
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					card.pop.setVisible(false);
 					card.pop = new MyPopupMenu(this.controller, card);
 					card.pop.setLocation(e.getXOnScreen(), e.getYOnScreen());
 					card.pop.setVisible(true);
-					
+					card.mouseOn = false;
 				} else if (e.getButton() == MouseEvent.BUTTON1) {
 					if (this.card.inShop) {
 						this.controller.getHero().buyCard(this.card);
@@ -171,12 +177,14 @@ public class InventoryPanel extends MyPanel implements MouseListener {
 		public void mouseEntered(MouseEvent e) {
 			if (this.card != null) {
 				this.card.mouseEntered(e);
+				infoPanel.tryToSetVisible(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
+						this.getLocationOnScreen().y - infoPanel.getHeight() > 0 ? this.getLocationOnScreen().y - infoPanel.getHeight() : this.getLocationOnScreen().y + this.getHeight());
 				repaint();
 			}
 			if (infoPanel != null && !infoPanel.isVisible()) {
-				infoPanel.setLocation(this.getLocationOnScreen().x - infoPanel.getWidth() > 0 ? this.getLocationOnScreen().x - infoPanel.getWidth() : this.getLocationOnScreen().x + this.getWidth(),
-						this.getLocationOnScreen().y - infoPanel.getHeight() > 0 ? this.getLocationOnScreen().y - infoPanel.getHeight() : this.getLocationOnScreen().y + this.getHeight());
-				infoPanel.setVisible(true);
+//				infoPanel.setLocation();
+				
+//				infoPanel.setVisible(true);
 			}
 			
 			
